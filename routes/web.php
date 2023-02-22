@@ -4,6 +4,7 @@ use App\Http\Controllers\adminpanelController;
 use App\Http\Controllers\BasketController;
 use App\Http\Controllers\BlogCommentController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\BookmarkcourseController;
 use App\Http\Controllers\CourseAuthorController;
 use App\Http\Controllers\CourseCatagoryController;
 use App\Http\Controllers\CourseChildCatagoryController;
@@ -32,12 +33,15 @@ use App\Http\Controllers\QuizEnrollController;
 use App\Http\Controllers\QuizPricingController;
 use App\Http\Controllers\QuizQuestionsBankController;
 use App\Http\Controllers\QuizQuestionsController;
+use App\Http\Controllers\QuizsolutionController;
 use App\Http\Controllers\QuizSubCatagoriesController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\TeacherDiscussionController;
 use App\Http\Controllers\uploadController;
 use App\Http\Controllers\UsersController;
 use App\Models\CourseCatagory;
 use App\Models\CourseEnroll;
+use App\Models\CoursePricing;
 use App\Models\CourseSubCatagory;
 use Illuminate\Support\Facades\Route;
 
@@ -70,16 +74,19 @@ Route::get('/complete-payment-sucess', [BasketController::class, 'completePaymen
 Route::get('/userportal', [frontendController::class, 'selectDataForIndexPage']);
 Route::get('/blogdetails/{id}', [frontendController::class, 'blogdetails']);
 Route::get('/coursedetails/{id}', [frontendController::class, 'coursedetails']);
+Route::get('/coursesubdetails/{subcourse}/{id}', [frontendController::class, 'coursesubdetails']);
 Route::get('/quizdetails/{id}', [frontendController::class, 'quizdetails']);
 Route::get('/basket', [frontendController::class, 'basket']);
 
 Route::get('/all-courses', [frontendController::class, 'allCourses']);
-
-
-Route::get('/coursecontent/{course_id}/{id}', [frontendController::class, 'coursecontent']);
+Route::get('/savethiscourse/{course_id}/{user_id}/{type}', [BookmarkcourseController::class, 'store']);
+Route::get('/removethiscourse/{course_id}/{user_id}/{type}', [BookmarkcourseController::class, 'destroy']);
+Route::get('/coursecontent/{course_id}/{id}/{subcourse}', [frontendController::class, 'coursecontent']);
 
 Route::get('/quizcontent/{quiz_id}', [frontendController::class, 'quizcontent']);
 
+Route::post('quizsolution', [QuizsolutionController::class, 'store']);
+Route::get('/leaderboard/{user_id}/{quiz_id}', [QuizsolutionController::class, 'selectLeaderBoard']);
 Route::get('/addUser', function () {
     return view('user.add');
 });
@@ -96,6 +103,7 @@ Route::get('/user-register', function () {
 Route::get('/user-login', function () {
     return view('frontend.pages.login');
 });
+Route::post('/askQuestionToTeacher', [TeacherDiscussionController::class, 'store']);
 Route::put('/postBlogComment', [BlogCommentController::class, 'store']);
 Route::post('/addUserData', [UsersController::class, 'store']);
 Route::post('/updateUserData', [UsersController::class, 'updateUserProfile']);
@@ -221,14 +229,19 @@ Route::get('/addcourse', [CourseController::class, 'index']);
 Route::get('/edit-course/{id}', [CourseController::class, 'edit']);
 
 Route::get('/addPayment', [PaymentsController::class, 'index']);
+Route::get('/paymentlist', [PaymentsController::class, 'list']);
 
 Route::get('/addTeacher', [TeacherController::class, 'index']);
 
 Route::get('/addBlog', [BlogController::class, 'index']);
 
 Route::get('/addCustomers', [CustomerController::class, 'index']);
+Route::get('selectcoursepricing', [CoursePricingController::class, 'selectcoursepricing']);
+Route::get('selectquizpricing', [QuizPricingController::class, 'selectquizpricing']);
 
+Route::get('searchuser', [UsersController::class, 'searchuser']);
 Route::get('/enroll', [CourseEnrollController::class, 'index']);
+Route::get('/listenroll', [CourseEnrollController::class, 'enrollmentlist']);
 
 Route::get('/listcourse', [CourseController::class, 'list']);
 

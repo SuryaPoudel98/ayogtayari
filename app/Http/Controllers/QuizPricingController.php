@@ -43,7 +43,7 @@ class QuizPricingController extends Controller
         $quizPricing->sell_price = $request->sell_price;
         $quizPricing->sell_exipiry = $request->sell_exipiry;
         $quizPricing->save();
-        return redirect('/addQuiz')->with('status','Your data has been submitted successfully');
+        return redirect('/addQuiz')->with('status', 'Your data has been submitted successfully');
     }
 
     /**
@@ -94,6 +94,11 @@ class QuizPricingController extends Controller
         return json_encode(array('status' => true, 'message' => 'Successfully Updated.'));
     }
 
+    public function selectquizpricing(Request $request)
+    {
+        $coursePricing = QuizPricing::where('quiz_id', $request->get('query'))->get();
+        return json_encode($coursePricing);
+    }
     /**
      * Remove the specified resource from storage.
      *

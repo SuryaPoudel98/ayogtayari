@@ -29,7 +29,7 @@
         </div>
     </div>
 </div>
-</div>
+<!-- </div> -->
 <div class="single-pro-review-area mt-t-30 mg-b-15">
     <div class="container-fluid">
         <div class="row">
@@ -90,7 +90,7 @@
                                                 <div class="row">
                                                     <div class="col-lg-1">
                                                         <div class="payment-adress">
-                                                            <button type="submit"  class="btn btn-primary waves-effect waves-light">Submit</button>
+                                                            <button type="submit" class="btn btn-primary waves-effect waves-light">Submit</button>
                                                         </div>
                                                     </div>
                                                 </div>

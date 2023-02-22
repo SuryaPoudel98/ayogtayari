@@ -95,7 +95,12 @@ $todaydate=date("Y-m-d");
                             <div class="col-lg-3 col-md-4 col-sm-12 m-b30">
                                 <div class="profile-bx text-center">
                                     <div class="user-profile-thumb">
+                                        @if(@$user[0]->thumbnail!="")
                                         <img style="object-fit: cover; height:100%; width:100%;" src="/profilepicture/{{@$user[0]->thumbnail}}" alt="" />
+                                        @else
+                                        <img style="object-fit: cover; height:100%; width:100%;" src="user.png" alt="" />
+                                        @endif
+
                                     </div>
                                     <div class="profile-info">
                                         <h4>{{@$user[0]->fullname}}</h4>
@@ -144,7 +149,7 @@ $todaydate=date("Y-m-d");
                                                 <h3 class="hd" onclick="hd(3)">Daily MCQ</h3>
                                                 <h3 class="hd" onclick="hd(4)">My E-Book</h3>
                                                 <h3 class="hd" onclick="hd(5)">My Bookmarks</h3>
-                                                <h3 class="hd" onclick="hd(6)">My Files</h3>
+                                               
                                                 <h3 class="hd" onclick="hd(7)">Assignments</h3>
                                                 <!-- <div class="feature-filters style1 ml-auto">
                                                     <ul class="filters" data-toggle="buttons">
@@ -539,179 +544,100 @@ $todaydate=date("Y-m-d");
                                                 <div class="courses-filter" id="filt5">
                                                     <div class="clearfix">
                                                         <div class="profile-head1" id="prof-head1">
-                                                            <h3 class="sub-menu heading-active1" onclick="bm(1)">Saved MCQ</h3>
-                                                            <h3 class="sub-menu" onclick="bm(2)">Saved Lessons</h3>
-                                                            <h3 class="sub-menu" onclick="bm(3)"> Current Affairs</h3>
+                                                            <h3 class="sub-menu heading-active1" onclick="bm(1)">Saved Courses</h3>
+                                                            <h3 class="sub-menu" onclick="bm(2)">Saved MCQs</h3>
 
                                                         </div>
 
-                                                        <table class="dailymcq" id="bookmarks1">
-                                                            <tr>
-                                                                <th>
-                                                                    S.N
-                                                                </th>
-                                                                <th>Saved MCQ</th>
-                                                                <th>
-                                                                    Date
-                                                                </th>
-                                                                <th>Practice As MCQ Exam</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>1.</td>
-                                                                <td>Computer Science MCQ</td>
-                                                                <td>2022 - 02 - 22</td>
-                                                                <td><button class="btn">Take MCQ Exam Now</button></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>2.</td>
-                                                                <td>Digital Logic System MCQ</td>
-                                                                <td>2022 - 02 - 24</td>
-                                                                <td><button class="btn">Take MCQ Exam Now</button></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>3.</td>
-                                                                <td>Programming Logic Unit MCQ</td>
-                                                                <td>2022 - 02 - 24</td>
-                                                                <td><button class="btn">Take MCQ Exam Now</button></td>
-                                                            </tr>
-                                                        </table>
-                                                        <table class="dailymcq" id="bookmarks2">
-                                                            <tr>
-                                                                <th>
-                                                                    S.N
-                                                                </th>
-                                                                <th>Saved Lessons</th>
-                                                                <th>
-                                                                    Published Date
-                                                                </th>
-                                                                <th>Explore</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>1.</td>
-                                                                <td>Computer Science</td>
-                                                                <td>2022 - 02 - 22</td>
-                                                                <td><button class="btn">Read More About This Book</button></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>2.</td>
-                                                                <td>Digital Logic System </td>
-                                                                <td>2022 - 02 - 24</td>
-                                                                <td><button class="btn">Read More About This Book</button></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>3.</td>
-                                                                <td>Programming Logic Unit</td>
-                                                                <td>2022 - 02 - 24</td>
-                                                                <td><button class="btn">Read More About This Book</button></td>
-                                                            </tr>
-                                                        </table>
-                                                        <table class="dailymcq" id="bookmarks3">
-                                                            <tr>
-                                                                <th>
-                                                                    S.N
-                                                                </th>
-                                                                <th>Current Affairs Lessons</th>
-                                                                <th>
-                                                                    Published Date
-                                                                </th>
-                                                                <th>Explore</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>1.</td>
-                                                                <td>Computer Science</td>
-                                                                <td>2022 - 02 - 22</td>
-                                                                <td><button class="btn">Read More About This Book</button></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>2.</td>
-                                                                <td>Digital Logic System </td>
-                                                                <td>2022 - 02 - 24</td>
-                                                                <td><button class="btn">Read More About This Book</button></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>3.</td>
-                                                                <td>Programming Logic Unit</td>
-                                                                <td>2022 - 02 - 24</td>
-                                                                <td><button class="btn">Read More About This Book</button></td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                                <div class="courses-filter" id="filt6">
-                                                    <div class="clearfix">
-                                                        <table class="dailymcq">
-                                                            <tr>
-                                                                <th>
-                                                                    S.N
-                                                                </th>
-                                                                <th>File Type</th>
-                                                                <th>File Name</th>
-                                                                <th>
-                                                                    Purchase Date
-                                                                </th>
-                                                                <th>Courses Completed (Status Bar)</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>1.</td>
-                                                                <td> MCQ</td>
-                                                                <td> Computer Science</td>
-                                                                <td>2022 - 02 - 22</td>
-                                                                <td>
-                                                                    <div class="skill-progress-bar">
-                                                                        <div class="bar">
-                                                                            <div class="info">
-                                                                                <span>Course Completed</span>
+
+
+
+                                                        <div id="bookmarks1">
+                                                            <ul id="masonry" class="ttr-gallery-listing magnific-image row">
+
+                                                                @foreach($bookmarkscourses as $course)
+
+                                                                <li class="action-card col-xl-4 col-lg-6 col-md-12 col-sm-6 publish">
+                                                                    <div class="cours-bx">
+                                                                        <div class="action-box">
+                                                                            <img src="/uploads/Postimg/{{@$course->thumbnail}}" alt="">
+                                                                            <a href="{{url('coursedetails', $course->course_id)}}" class="btn">Read More</a>
+                                                                        </div>
+                                                                        <div class="info-bx text-center">
+                                                                            <h5><a href="{{url('coursedetails', $course->course_id)}}">{{@$course->course_title}}</a></h5>
+                                                                            <span>Programming</span>
+                                                                        </div>
+                                                                        <div class="cours-more-info">
+                                                                            <div class="review bor-canc">
+                                                                                <span>3 Review</span>
+                                                                                <ul class="cours-star">
+                                                                                    <li class="active"><i class="fa fa-star"></i></li>
+                                                                                    <li class="active"><i class="fa fa-star"></i></li>
+                                                                                    <li class="active"><i class="fa fa-star"></i></li>
+                                                                                    <li><i class="fa fa-star"></i></li>
+                                                                                    <li><i class="fa fa-star"></i></li>
+                                                                                </ul>
                                                                             </div>
-                                                                            <div class="progress-line mcq">
-                                                                                <span></span>
+                                                                            <div class="price">
+                                                                                @if(!empty($course->normalPrice[0]->normal_price))
+
+                                                                                <del>Rs. {{@$course->normalPrice[0]->normal_price-10}}.00</del>
+                                                                                <h5>Rs. {{@$course->normalPrice[0]->normal_price}}.00</h5>
+                                                                                @else
+                                                                                <del>Paid</del>
+                                                                                <h5>Free</h5>
+                                                                                @endif
                                                                             </div>
                                                                         </div>
-
                                                                     </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>2.</td>
-                                                                <td> Lesson</td>
-                                                                <td> Digital Logic System</td>
-                                                                <td>2022 - 02 - 22</td>
-                                                                <td>
-                                                                    <div class="skill-progress-bar">
-                                                                        <div class="bar">
-                                                                            <div class="info">
-                                                                                <span>Course Completed</span>
+                                                                </li>
+
+                                                                @endforeach
+
+                                                            </ul>
+                                                        </div>
+                                                        <div id="bookmarks2">
+                                                            <ul id="masonry" class="ttr-gallery-listing magnific-image row">
+
+
+                                                                @foreach($bookmarksquizes as $course)
+
+                                                                <li class="action-card col-xl-4 col-lg-6 col-md-12 col-sm-6 pending">
+                                                                    <div class="cours-bx">
+                                                                        <div class="action-box">
+                                                                            <img src="/uploads/Postimg/{{@$course->thumbnail}}" alt="">
+                                                                            <a href="{{url('quizcontent', $course->quiz_id)}}" class="btn">Read More</a>
+                                                                        </div>
+                                                                        <div class="info-bx text-center">
+                                                                            <h5><a href="{{url('quizcontent', $course->quiz_id)}}">{{@$course->quiz_title}}</a></h5>
+                                                                            <span>Programming</span>
+                                                                        </div>
+                                                                        <div class="cours-more-info">
+                                                                            <div class="review bor-canc">
+                                                                                <span>3 Review</span>
+                                                                                <ul class="cours-star">
+                                                                                    <li class="active"><i class="fa fa-star"></i></li>
+                                                                                    <li class="active"><i class="fa fa-star"></i></li>
+                                                                                    <li class="active"><i class="fa fa-star"></i></li>
+                                                                                    <li><i class="fa fa-star"></i></li>
+                                                                                    <li><i class="fa fa-star"></i></li>
+                                                                                </ul>
                                                                             </div>
-                                                                            <div class="progress-line lesson">
-                                                                                <span></span>
+                                                                            <div class="price">
+
+                                                                                <h5 style="font-weight:500; font-size:13px; margin-top:5px">Joined: {{ Carbon\Carbon::parse(@$course->startDate)->format('M d Y') }}</h5>
                                                                             </div>
                                                                         </div>
-
                                                                     </div>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>3.</td>
-                                                                <td> E-book</td>
-                                                                <td> Html css course</td>
-                                                                <td>2022 - 02 - 22</td>
-                                                                <td>
-                                                                    <div class="skill-progress-bar">
-                                                                        <div class="bar">
-                                                                            <div class="info">
-                                                                                <span>Course Completed</span>
-                                                                            </div>
-                                                                            <div class="progress-line e-book">
-                                                                                <span></span>
-                                                                            </div>
-                                                                        </div>
+                                                                </li>
 
-                                                                    </div>
-                                                                </td>
-                                                            </tr>
-                                                        </table>
+                                                                @endforeach
+                                                            </ul>
+                                                        </div>
 
                                                     </div>
                                                 </div>
+                                               
                                                 <div class="courses-filter" id="filt7">
                                                     <div class="clearfix">
                                                         <table class="dailymcq">
@@ -1135,6 +1061,7 @@ $todaydate=date("Y-m-d");
                                                             @if($course->endDate<$todaydate) <li class="action-card col-xl-4 col-lg-6 col-md-12 col-sm-6 publish">
                                                                 <div class="cours-bx">
                                                                     <div class="action-box">
+
                                                                         <img src="/uploads/Postimg/{{@$course->thumbnail}}" alt="">
                                                                         <a href="{{url('coursedetails', $course->course_id)}}" class="btn">Read More</a>
                                                                     </div>

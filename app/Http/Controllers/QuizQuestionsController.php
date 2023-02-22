@@ -97,6 +97,7 @@ class QuizQuestionsController extends Controller
      */
     public function store(Request $request)
     {
+        // return $request->answerItems;
         if ($request->questions_id != "") {
             QuizQuestions::where('questions_id', '=', $request->questions_id)->update([
                 'quiz_id' => $request->quiz_id,
@@ -112,7 +113,12 @@ class QuizQuestionsController extends Controller
                     $QuizAnswerOption = new QuizAnswerOption();
                     $QuizAnswerOption->question_id = $questions_id;
                     $QuizAnswerOption->answer = $val[1];
-                    $QuizAnswerOption->correctornot = $val[1];
+                    if ($val[2] == "NO") {
+                        $QuizAnswerOption->correctornot = 0;
+                    } else {
+                        $QuizAnswerOption->correctornot = 1;
+                    }
+
                     $QuizAnswerOption->answer_option = $val[0];
                     $QuizAnswerOption->save();
                 }
@@ -146,7 +152,12 @@ class QuizQuestionsController extends Controller
                     $QuizAnswerOption = new QuizAnswerOption();
                     $QuizAnswerOption->question_id = $questions_id;
                     $QuizAnswerOption->answer = $val[1];
-                    $QuizAnswerOption->correctornot = 1;
+                    if ($val[2] == "NO") {
+                        $QuizAnswerOption->correctornot = 0;
+                    } else {
+                        $QuizAnswerOption->correctornot = 1;
+                    }
+
                     $QuizAnswerOption->answer_option = $val[0];
                     $QuizAnswerOption->save();
                 }

@@ -178,6 +178,52 @@ class frontendController extends Controller
 
         return view('frontend.pages.quizdetails', compact('quizes', 'quizpricing', 'courseAuthor', 'similarquizes'));
     }
+
+    public function coursesubdetails($subcourse, $id)
+    {
+
+        $course = \DB::table('courses')
+            ->join('course_catagories', 'courses.cid', '=', 'course_catagories.cid')
+            ->select('courses.*', 'course_catagories.catagory_name')
+            ->where('course_id', $id)
+            ->get();
+
+        $coursePricing = CoursePricing::where('course_id', $id)->get();
+
+
+
+
+        $similarcourses = \DB::table('courses')
+            ->join('course_catagories', 'courses.cid', '=', 'course_catagories.cid')
+            ->select('courses.*', 'course_catagories.catagory_name')
+            ->where('course_id', '!=', $id)
+            ->get(10);
+
+        $a = [];
+        foreach ($similarcourses as $item) {
+            if ($item->course_price == 1) {
+                $normalprice = \DB::select("SELECT normal_price FROM `course_pricings` where course_id='" . $item->course_id . "' order by normal_price ASC limit 1");
+                foreach ($normalprice as $prcie) {
+                    array_push($a, $prcie);
+                }
+                $item->normalPrice = $a;
+
+                $a = [];
+            }
+        }
+
+
+
+        if ($subcourse == "course_newsor_articles" || $subcourse == "course_others") {
+            $lesson = "";
+
+            return view('frontend.pages.coursesubdetails', compact('course', 'similarcourses', 'coursePricing', 'lesson'));
+        } else {
+            $lesson = \DB::select("select  DISTINCT lesson from " . $subcourse . " where course_id='" . $id . "'");
+
+            return view('frontend.pages.coursesubdetails', compact('course', 'similarcourses', 'coursePricing', 'lesson'));
+        }
+    }
     public function coursedetails($id)
     {
 
@@ -218,21 +264,25 @@ class frontendController extends Controller
 
 
 
+
+
+
         return view('frontend.pages.coursedetails', compact('course', 'similarcourses', 'courseAuthor', 'coursePricing'));
     }
 
 
-    public function coursecontent($course_id, $id)
+    public function coursecontent($course_id, $id, $subcourse)
     {
         if ($id == 0) {
-            $courseCirriculumn = CourseCurriculumn::where('course_id', $course_id)->orderBy('id', 'DESC')->take(1)->get();
+            $courseCirriculumn = \DB::select("select  * from " . $subcourse . " where course_id='" . $course_id . "' order by id DESC limit 1");
         } else {
-            $courseCirriculumn = CourseCurriculumn::where('course_id', $course_id)->where('id', $id)->get();
+            $courseCirriculumn = \DB::select("select  * from " . $subcourse . " where course_id='" . $course_id . "' and id='" . $id . "'");
         }
 
 
+        // dd($courseCirriculumn);
 
-        $lesson = \DB::select("select  DISTINCT lesson from course_curriculumns where course_id='" . $course_id . "'");
+        $lesson = \DB::select("select  DISTINCT lesson from " . $subcourse . " where course_id='" . $course_id . "'");
         // dd($lesson);
 
         return view('frontend.pages.coursecontent', compact('courseCirriculumn', 'lesson'));
@@ -258,6 +308,27 @@ class frontendController extends Controller
             ->where('user_id',  $user_id)
             ->get();
 
+        $bookmarkscourses = \DB::table('bookmarkcourses')
+            ->join('courses', 'courses.course_id', '=', 'bookmarkcourses.course_or_quiz_id')
+            ->join('course_catagories', 'courses.cid', '=', 'course_catagories.cid')
+            ->select('courses.*', 'course_catagories.catagory_name')
+            ->where('type', 0)
+            ->where('user_id',  $user_id)
+            ->get();
+
+        $a = [];
+        foreach ($bookmarkscourses as $item) {
+            if ($item->course_price == 1) {
+                $normalprice = \DB::select("SELECT normal_price FROM `course_pricings` where course_id='" . $item->course_id . "' order by normal_price ASC limit 1");
+                foreach ($normalprice as $prcie) {
+                    array_push($a, $prcie);
+                }
+                $item->normalPrice = $a;
+
+                $a = [];
+            }
+        }
+
         $quizes = \DB::table('course_enrolls')
             ->join('quizzes', 'quizzes.quiz_id', '=', 'course_enrolls.course_or_quiz_id')
             ->join('quiz_catagories', 'quizzes.qid', '=', 'quiz_catagories.qid')
@@ -267,6 +338,28 @@ class frontendController extends Controller
             ->where('type', 1)
             // ->orderBy('id', 'DESC')
             ->get();
+
+
+        $bookmarksquizes = \DB::table('bookmarkcourses')
+            ->join('quizzes', 'quizzes.quiz_id', '=', 'bookmarkcourses.course_or_quiz_id')
+            ->join('quiz_catagories', 'quizzes.qid', '=', 'quiz_catagories.qid')
+            ->select('quizzes.*', 'quiz_catagories.quiz_catagories_name')
+            ->where('user_id',  $user_id)
+            ->where('type', 1)
+            // ->orderBy('id', 'DESC')
+            ->get();
+        $a = [];
+        foreach ($bookmarksquizes as $item) {
+            if ($item->quiz_price == 1) {
+                $normalprice = \DB::select("SELECT normal_price FROM `quiz_pricings` where quiz_id='" . $item->quiz_id . "' order by normal_price ASC limit 1");
+                foreach ($normalprice as $prcie) {
+                    array_push($a, $prcie);
+                }
+                $item->normalPrice = $a;
+
+                $a = [];
+            }
+        }
         $purchaseHistories = Payments::where('user_id', $user_id)->orderBy('payment_id', 'ASC')->get();
 
         $a = [];
@@ -311,7 +404,7 @@ class frontendController extends Controller
             $a = [];
         }
         // dd($purchaseHistories);
-        return view('frontend.userportal.dashboard', compact('user', 'courses', 'quizes', 'purchaseHistories'));
+        return view('frontend.userportal.dashboard', compact('user', 'courses', 'quizes', 'purchaseHistories', 'bookmarkscourses', 'bookmarksquizes'));
     }
 
 
@@ -346,7 +439,7 @@ class frontendController extends Controller
         $Quiz_Questions = \DB::select("SELECT  questions_id, question_title from quiz_questions where quiz_id='" . $id . "'");
         $a = [];
         foreach ($Quiz_Questions as $item) {
-            $answers = \DB::select("SELECT answer,correctornot,answer_option FROM `quiz_answer_options` where question_id='" . $item->questions_id . "'");
+            $answers = \DB::select("SELECT answer,correctornot,answer_option,quiz_answer_option_id FROM `quiz_answer_options` where question_id='" . $item->questions_id . "'");
             foreach ($answers as $ans) {
                 array_push($a, $ans);
             }

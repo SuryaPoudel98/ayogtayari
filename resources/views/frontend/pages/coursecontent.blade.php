@@ -71,7 +71,7 @@
         </div>
         <div class="text">Lessons</div>
         <ul>
-
+            <?php $table = request()->route('subcourse'); ?>
 
             @foreach(@$lesson as $item)
             <li>
@@ -83,12 +83,12 @@
                 <ul class="feat-show">
 
                     <?php
-                    $sublesson = \DB::select("select  DISTINCT sub_lesson,id from course_curriculumns where lesson='" . $item->lesson . "' and course_id='" . $courseCirriculumn[0]->course_id . "'");
+                    $sublesson = \DB::select("select  DISTINCT sub_lesson,id from " . $table . " where lesson='" . $item->lesson . "' and course_id='" . $courseCirriculumn[0]->course_id . "'");
                     ?>
                     @foreach(@$sublesson as $subitem)
                     <li class="sub-menu">
                         <?php
-                        $childlesson = \DB::select("select  DISTINCT child_lesson,id from course_curriculumns where lesson='" . $item->lesson . "' and sub_lesson='" . $subitem->sub_lesson . "' and course_id='" . $courseCirriculumn[0]->course_id . "'");
+                        $childlesson = \DB::select("select  DISTINCT child_lesson,id from " . $table . " where lesson='" . $item->lesson . "' and sub_lesson='" . $subitem->sub_lesson . "' and course_id='" . $courseCirriculumn[0]->course_id . "'");
                         ?>
                         @if(!empty($childlesson))
                         <a href="#" class="sub-cursor">{{@$subitem->sub_lesson}}
@@ -96,7 +96,7 @@
                         </a>
 
                         @else
-                        <a href="/coursecontent/{{ @$courseCirriculumn[0]->course_id}}/{{@$subitem->id}}" class="sub-cursor">{{@$subitem->sub_lesson}}
+                        <a href="/coursecontent/{{ @$courseCirriculumn[0]->course_id}}/{{@$subitem->id}}/{{request()->route('subcourse')}}" class="sub-cursor">{{@$subitem->sub_lesson}}
                             <span class="fas fa-caret-down third"></span>
                         </a>
 
@@ -104,7 +104,7 @@
 
                         @foreach(@$childlesson as $childitem)
                         <ul class="child-show1">
-                            <li class="sub-child-menu"><a href="/coursecontent/{{ @$courseCirriculumn[0]->course_id}}/{{@$subitem->id}}">{{@$childitem->child_lesson}}</a></li>
+                            <li class="sub-child-menu"><a href="/coursecontent/{{ @$courseCirriculumn[0]->course_id}}/{{@$subitem->id}}/{{request()->route('subcourse')}}">{{@$childitem->child_lesson}}</a></li>
 
                         </ul>
                         @endforeach
@@ -115,11 +115,6 @@
             </li>
             @endforeach
 
-
-            <li><a href="#">Portfolio</a></li>
-            <li><a href="#">Overview</a></li>
-            <li><a href="#">Shortcuts</a></li>
-            <li><a href="#">Feedback</a></li>
 
 
         </ul>
@@ -143,30 +138,49 @@
                             </div>
                             <div class="course-name" style=" text-align: center;  font-size: 27px; padding-top: 10px;">
                                 <p>Lesson : {{@$courseCirriculumn[0]->lesson}}</p>
+                            </div><?php
+
+                                    $nextid = \DB::select("select  id from course_curriculumns where   course_id='" . $courseCirriculumn[0]->course_id . "' and id>'" . request()->route('id') . "' order by id DESC limit 1");
+                                    $previousid = \DB::select("select  id from course_curriculumns where   course_id='" . $courseCirriculumn[0]->course_id . "' and id<'" . request()->route('id') . "' order by id DESC limit 1");
+
+                                    ?>
+                            <div class="prev-next">
+                                <div class="prev-pag">
+                                    <a href="/coursecontent/{{ @$courseCirriculumn[0]->course_id}}/{{@$previousid[0]->id}}/{{request()->route('subcourse')}}"> <button>
+                                            < Prev </button></a>
+                                </div>
+
+
+                                <div class="next-pag">
+                                    <a href="/coursecontent/{{ @$courseCirriculumn[0]->course_id}}/{{@$nextid[0]->id}}/{{request()->route('subcourse')}}"> <button> Next > </button></a>
+                                </div>
                             </div>
-
                         </div>
-                        <!-- <video style="width: 100%; margin-top: 20px; border: 1px solid rgb(192, 192, 192);" controls>
 
-                            <source src="/onlinecourse/assets/videos/video.mp4" type="video/mp4">
-                        </video> -->
 
                         <div class="breif-introduction" style="margin-top:10px; background-color: rgb(236, 236, 236); padding: 20px; text-align: justify; border-radius: 5px;">
                             <h4>{{@$courseCirriculumn[0]->child_lesson}}</h4>
                             {!!@$courseCirriculumn[0]->description!!}
+                            @if(@$courseCirriculumn[0]->video_file!="")
+                            <video style="width: 100%; margin-top: 20px; " controls>
+
+                                <source src="/file/{{$courseCirriculumn[0]->video_file}}" type="video/mp4">
+                            </video>
+                            @endif
+                            @if(@$courseCirriculumn[0]->quiz_id!="")
+                            <?php
+                            $quiz = \DB::select("select quiz_title from quizzes where quiz_id='" . $courseCirriculumn[0]->quiz_id . "'");
+                            ?>
+                            <a href="/quizcontent/{{$courseCirriculumn[0]->quiz_id}}">{{$quiz[0]->quiz_title}}</a>
+                            @endif
+                            @if(@$courseCirriculumn[0]->file!="")
+                            <iframe src="/file/{{$courseCirriculumn[0]->file}}" style="border:1px solid white;" width="100%" height="700px">
+                            </iframe>
+                            @endif
                         </div>
 
                     </div>
-                    <div class="pagination">
-                        <a href="#">&laquo;</a>
-                        <a class="active" href="#">1</a>
-                        <a href="#">2</a>
-                        <a href="#">3</a>
-                        <a href="#">4</a>
-                        <a href="#">5</a>
-                        <a href="#">6</a>
-                        <a href="#">&raquo;</a>
-                    </div>
+
                 </div>
                 <!-- Popular Courses END -->
 

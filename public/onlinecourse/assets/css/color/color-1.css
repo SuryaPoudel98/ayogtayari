@@ -205,7 +205,7 @@ button.back-to-top:hover,
 .testimonial-carousel .owl-nav .owl-next:hover,
 .testimonial-carousel .owl-nav .owl-prev:hover {
     background-color: #ffa31a;
-    color: #fff;
+    color: #fff!important;
 }
 
 .heading-bx.left .title-head {

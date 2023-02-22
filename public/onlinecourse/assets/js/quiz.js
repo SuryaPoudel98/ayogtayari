@@ -156,9 +156,10 @@ let crossIconTag = '<div class="icon cross"><i class="fas fa-times"></i></div>';
 
 //if user clicked on option
 function optionSelected(answer){
+    // alert(answer);
     clearInterval(counter); //clear counter
     clearInterval(counterLine); //clear counterLine
-    let userAns = answer.textContent; //getting user selected option
+    let userAns = answer.innerHTML; //getting user selected option
     let correcAns = questions[que_count].answer; //getting correct answer from array
     const allOptions = option_list.children.length; //getting all option items
     
@@ -174,7 +175,7 @@ function optionSelected(answer){
         console.log("Wrong Answer");
 
         for(i=0; i < allOptions; i++){
-            if(option_list.children[i].textContent == correcAns){ //if there is an option which is matched to an array answer 
+            if(option_list.children[i].innerHTML == correcAns){ //if there is an option which is matched to an array answer 
                 option_list.children[i].setAttribute("class", "option correct"); //adding green color to matched option
                 option_list.children[i].insertAdjacentHTML("beforeend", tickIconTag); //adding tick icon to matched option
                 console.log("Auto selected correct answer.");
@@ -239,11 +240,11 @@ function startTimer(time){
 function startTimerLine(time){
     counterLine = setInterval(timer, 29);
     function timer(){
-        time += 1; //upgrading time value with 1
-        time_line.style.width = time + "px"; //increasing width of time_line with px by time value
-        if(time > 549){ //if time value is greater than 549
-            clearInterval(counterLine); //clear counterLine
-        }
+        // time += 1; //upgrading time value with 1
+        // time_line.style.width = time + "px"; //increasing width of time_line with px by time value
+        // if(time > 549){ //if time value is greater than 549
+        //     clearInterval(counterLine); //clear counterLine
+        // }
     }
 }
 

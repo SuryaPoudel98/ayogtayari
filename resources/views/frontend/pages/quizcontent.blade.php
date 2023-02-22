@@ -1,3 +1,13 @@
+<?php
+if (session()->get('sessionUserId') != "") {
+    $user = \DB::table('users')
+        ->select('*')
+        ->where('password', session()->get('sessionUserId'))
+        ->get();
+    $user_id = $user[0]->user_id;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -63,7 +73,20 @@
 </head>
 
 <body id="bg">
-    
+    <div id="ask-modal-id" class="modal" style="display: none!important;;">
+        <div class="modal-content-mini">
+            <div class="ask-modal-header">
+
+                <h2>Time Is UP.</h2>
+            </div>
+            <div class="modal-body">
+                <p>Time For Quiz Exam Is Up. Please Don't forget to save your result.</p>
+                <button class="btn" onclick="postAnswerIntoTable();">Submit Your Result</button>
+            </div>
+
+        </div>
+
+    </div>
     <div class="page-wraper" style="z-index: 3333333;">
         <div id="loading-icon-bx"></div>
         <!-- Header Top ==== -->
@@ -84,72 +107,66 @@
                             <div class="course-name" style=" text-align: center;  font-size: 27px; padding-top: 10px;">
                                 <p>{{@$quiz[0]->quiz_title}}</p>
                             </div>
+                            <div class="prev-next">
+                                <div class="prev-pag">
+                                    <a href="/leaderboard/{{$user_id}}/{{@$quiz[0]->quiz_id}}"> <button style="width:auto;"> View Leaderboard </button></a>
+                                </div>
 
+                            </div>
+
+                            <input type="hidden" id="_token" value="{{ csrf_token() }}">
+                            <input type="hidden" id="quiz_id" value="{{@$quiz[0]->quiz_id}}">
+                            <input type="hidden" id="user_id" value="{{$user_id}}">
+                            <input type="hidden" id="totalCorrectAns" name="totalCorrectAns" value="">
                             <div class="breif-introduction" style="margin-top:30px; background-color: rgb(236, 236, 236); padding: 20px; text-align: justify; border-radius: 5px;">
                                 {!!@$quiz[0]->quiz_description!!}
-                                <div class="start_btn_quiz"><button>Start Quiz</button></div>
+                                <div class="start_btn_quiz" id="startQuiz" style="display: block;"><button>Start Quiz</button></div>
                             </div>
                             <!-- start Quiz button -->
-
-
-                            <!-- Info Box -->
-                            <div class="info_box_quiz">
-                                <div class="info-title-quiz"><span>Some Rules of this Quiz</span></div>
-                                <div class="info-list-quiz">
-                                    <div class="info">1. You will have only <span>10 Minutes</span> per each question.</div>
-                                    <div class="info">2. Once you select your answer, it can't be undone.</div>
-                                    <div class="info">3. You can't select any option once time goes off.</div>
-                                    <div class="info">4. You can't exit from the Quiz while you're playing.</div>
-                                    <div class="info">5. You'll get points on the basis of your correct answers.</div>
-                                </div>
-                                <div class="buttons-quiz">
-                                    <button class="quit-quiz">Exit Quiz</button>
-                                    <button class="restart-quiz">Continue</button>
-                                </div>
-                            </div>
-
-                            <!-- Quiz Box -->
-                            <div class="quiz_box">
-                                <header>
-                                    <div class="title">Aayog Tayari Nepal </div>
-                                    <div id="ten-countdown">10:00</div>
-                                    <button class="cross_button">
-                                        <i class="fa-solid fa-xmark"></i>
-                                    </button>
-
+                            <div class="quiz-start">
+                                <header class="quiz-header">
+                                    <div class="quiz-title" style="font-size:25px ;">{{@$quiz[0]->quiz_title}} </div>
+                                    <div id="ten-countdown">00:00</div>
                                 </header>
-                                <section>
-                                    <div class="que_text">
-                                        <!-- Here I've inserted question from JavaScript -->
-                                    </div>
-                                    <div class="option_list">
-                                        <!-- Here I've inserted options from JavaScript -->
-                                    </div>
-                                </section>
+                                <div class="head-quiz">
+                                    <?php $i = 0; ?>
+                                    @foreach($Quiz_Questions as $item)
+                                    <?php $i++; ?>
+                                    <section class="quiz-grid">
+                                        <div class="que_text">
+                                            <span>{{$i}}. {!!$item->question_title!!}</span>
+                                        </div>
 
-                                <!-- footer-quiz of Quiz Box -->
-                                <footer-quiz>
+                                        <div class="option_list" id="option{{$i}}">
+                                            <!-- <div class="option correct "><span>Hyper Text Preprocessor</span>
+                                                <div class="icon tick"><i class="fa-regular fa-check"></i></div> 
+                                            </div>-->
+                                            @foreach($item->answerItems as $ansitem)
+                                            <div class="option" id="ans{{$ansitem->quiz_answer_option_id}}" onclick="checkansweriscorrectornot('{{$item->questions_id}}','ans{{$ansitem->quiz_answer_option_id}}','{{$ansitem->correctornot}}','option{{$i}}','{{$ansitem->quiz_answer_option_id}}')"><span>{!!$ansitem->answer!!}</span></div>
+
+                                            @endforeach
+                                        </div>
+
+                                    </section>
+                                    @endforeach
+                                </div>
+                                <footer-quiz class="footer-quiz">
                                     <div class="total_que">
-                                        <!-- Here I've inserted Question Count Number from JavaScript -->
+                                        <p id="nextCount">1 of {{count($Quiz_Questions)}} Questions</p>
+
+
                                     </div>
-                                    <button class="next_btn">Next Que</button>
+                                    <button class="next_btn" id="next_btn" onclick="showNext('{{count($Quiz_Questions)}}')">Next Que</button>
+                                    <button class="next_btn" id="submit_btn" style="display: none;" onclick="postAnswerIntoTable();">Submit</button>
                                 </footer-quiz>
+                                <!-- <div class="leaderboard-quiz">
+                                    <h3 style="text-align: center;">Congratulations You Have Completed This Quiz!</h3>
+                                    <p style="text-align: center; font-weight: 500;">Go to leaderboard to see your results. <a href="/leaderboard/{{$user_id}}/{{@$quiz[0]->quiz_id}}"> <button class="link-leaderboard"> Leaderboard</button></a><span> Or Restart Quiz<button class="link-leaderboard" onClick="refreshPage()"> Restart</button></span>
+                                    </p>
+                                </div> -->
                             </div>
 
-                            <!-- Result Box -->
-                            <div class="result_box_quiz">
-                                <div class="icon-quiz">
-                                    <i class="fas fa-crown"></i>
-                                </div>
-                                <div class="complete_text">You've completed the Quiz!</div>
-                                <div class="score_text">
-                                    <!-- Here I've inserted Score Result from JavaScript -->
-                                </div>
-                                <div class="buttons-quiz">
-                                    <button class="restart-quiz">Replay Quiz</button>
-                                    <button class="quit-quiz">Close Quiz</button>
-                                </div>
-                            </div>
+
                         </div>
 
                     </div>
@@ -170,36 +187,32 @@
     <script>
         let questions = [];
         let answer = [];
-    </script>
-    <?php $i = 0;
-    $correctanswer = ""; ?>
-    @foreach($Quiz_Questions as $item)
-    <?php $i++;
-
-    ?>
-
-    @foreach($item->answerItems as $ansitem)
-    @if($ansitem->correctornot==1)
-    <?php $correctanswer = $ansitem->answer; ?>
-    @endif
-    <script type="text/javascript">
-        answer.push("{!!$ansitem->answer!!}");
-    </script>
-    @endforeach
-    <script type="text/javascript">
-        var obj = {};
-        obj["numb"] = "<?php echo $i; ?>";
-        obj["question"] = "{!!$item->question_title!!}";
-        obj["answer"] = "<span>{!!$correctanswer!!}</span>";
-        obj["options"] = answer;
-        questions.push(obj);
-        answer = [];
+        let quizSolutions = [];
+        let totalCorrectAns = 0;
     </script>
 
-    @endforeach
 
     <script>
-        console.log(questions);
+        function checkansweriscorrectornot(question_id, id, correctOrNot, optionId, quiz_answer_option_id) {
+            if (correctOrNot == 1) {
+                var element = document.getElementById(id);
+                element.classList.add("correct");
+                totalCorrectAns++;
+
+                document.getElementById(optionId).querySelectorAll('.option').forEach(function(el) {
+                    el.removeAttribute('onclick');
+                });
+                quizSolutions.push(question_id + "[#]" + quiz_answer_option_id);
+                document.getElementById("totalCorrectAns").value = totalCorrectAns;
+            } else {
+                var element = document.getElementById(id);
+                element.classList.add("incorrect");
+                document.getElementById(optionId).querySelectorAll('.option').forEach(function(el) {
+                    el.removeAttribute('onclick');
+                });
+                quizSolutions.push(question_id + "[#]" + quiz_answer_option_id);
+            }
+        }
     </script>
     <!-- External JavaScripts -->
     <script src="{{asset('onlinecourse/assets/js/jquery.min.js')}}"></script>
@@ -216,37 +229,115 @@
     <script src="{{asset('onlinecourse/assets/vendors/owl-carousel/owl.carousel.js')}}"></script>
     <script src="{{asset('onlinecourse/assets/js/functions.js')}}"></script>
     <script src="{{asset('onlinecourse/assets/js/contact.js')}}"></script>
+    <script src="{{asset('onlinecourse/assets/js/quiz-next-jquery.js')}}"></script>
+
 
     <script>
-        $('.btn-navbar').click(function() {
-            $(this).toggleClass("click");
-            $('.sidebar').toggleClass("show");
+        let myInterval;
+        let quiz_time = <?php echo @$quiz[0]->quiz_time; ?>;
+
+        function postAnswerIntoTable() {
+            var token = document.getElementById('_token').value;
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ url('quizsolution')}}",
+                data: {
+                    _token: token,
+                    quizSolutions: quizSolutions.toString(),
+                    quiz_id: document.getElementById("quiz_id").value,
+                    user_id: document.getElementById("user_id").value,
+                    totalCorrectAns: document.getElementById("totalCorrectAns").value,
+                },
+                async: false,
+                dataType: 'json',
+                success: function(dataResult) {
+                    document.getElementById("ask-modal-id").style.display = "none";
+                    window.location.href = "/leaderboard/{{$user_id}}/{{@$quiz[0]->quiz_id}}";
+                    $('button.next_btn').addClass("quiz-hide");
+                    $('.head-quiz').addClass("quiz-hide");
+                    $('.footer-quiz').addClass("quiz-hide");
+                    $('.leaderboard-quiz').addClass("mcqs-show");
+                },
+                error: function(response) {
+                    document.getElementById("ask-modal-id").style.display = "none";
+                    alert("Please take your exam first!")
+                }
+            });
+        }
+
+        /*quiz script button*/
+        $('.start_btn_quiz').click(function() {
+            $('.quiz-start').toggleClass("quiz-display-show");
+            document.getElementById("startQuiz").style.display = "none";
+            setTimeout(checkTimerHere, quiz_time * 60 * 1000);
         });
-        $('.feat-btn').click(function() {
-            $('nav ul .feat-show').toggleClass("show");
-            $('nav ul .first').toggleClass("rotate");
-        });
-        $('.serv-btn').click(function() {
-            $('nav ul .serv-show').toggleClass("show1");
-            $('nav ul .second').toggleClass("rotate");
-        });
-        $('.feat-btn2').click(function() {
-            $('nav ul .feat-show2').toggleClass("show2");
-            $('nav ul .third').toggleClass("rotate");
-        });
-        $('nav ul li').click(function() {
-            $(this).addClass("active").siblings().removeClass("active");
-        });
+
+        var visibleDiv = 0;
+
+        function showDiv() {
+            $(".quiz-grid").hide();
+            $(".quiz-grid:eq(" + visibleDiv + ")").show();
+        }
+        showDiv()
+
+        function showNext(count) {
+
+            if (visibleDiv == $(".quiz-grid").length - 1) {
+                visibleDiv = 0;
+                $('button.next_btn').addClass("quiz-hide");
+                $('.head-quiz').addClass("quiz-hide");
+                $('.footer-quiz').addClass("quiz-hide");
+                $('.leaderboard-quiz').addClass("mcqs-show");
+            } else {
+                visibleDiv++;
+            }
+            document.getElementById("nextCount").innerHTML = (visibleDiv + 1) + " of " + count + " Questions";
+            if (count == (visibleDiv + 1)) {
+                document.getElementById("next_btn").style.display = "none";
+                document.getElementById("submit_btn").style.display = "block";
+            }
+            showDiv();
+
+        }
+
+        function checkTimerHere() {
+            clearInterval(myInterval);
+            document.getElementById('ten-countdown').innerHTML = "0:00";
+            document.getElementById("ask-modal-id").style.display = "block";
+        }
+
+        function refreshPage() {
+            window.location.reload();
+        }
+        /*timer set*/
+        const timer_btn = document.querySelector(".start_btn_quiz");
+
+
+        timer_btn.onclick = () => {
+
+            const startingMinutes = quiz_time;
+            let time = startingMinutes * 60;
+            const countdownEl = document.getElementById('ten-countdown');
+
+            myInterval = setInterval(updatedCountdown, 1000);
+
+            function updatedCountdown() {
+                const minutes = Math.floor(time / 60);
+                let seconds = time % 60;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+
+                countdownEl.innerHTML = `${minutes}:${seconds}`;
+
+                time--;
+            }
+
+        }
     </script>
 
+
+
 </body>
-
-<!-- Inside this JavaScript file I've inserted Questions and Options only -->
-<script src="{{asset('onlinecourse/assets/js/questions.js')}}"></script>
-
-<!-- Inside this JavaScript file I've coded all Quiz Codes -->
-<script src="{{asset('onlinecourse/assets/js/quiz.js')}}"></script>
-
 
 
 </html>

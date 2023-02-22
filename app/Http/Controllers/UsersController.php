@@ -24,6 +24,12 @@ class UsersController extends Controller
     }
 
 
+
+    public function searchuser(Request $request)
+    {
+        $user = \DB::table('users')->where('email_address', 'LIKE','%'.$request->get('query').'%')->get();
+        return json_encode($user);
+    }
     /**
      * Show the form for creating a new resource.
      *

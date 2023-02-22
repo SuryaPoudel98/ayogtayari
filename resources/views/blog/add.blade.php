@@ -52,10 +52,12 @@
                                                 <div class="row">
                                                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                         <div class="form-group">
+                                                        <label class="form-label">Title</label>
                                                             <input name="blog_title" required class="form-control" type="text" placeholder="Blog Title">
                                                             <input type="hidden" id="_token" value="{{ csrf_token() }}">
                                                         </div>
                                                         <div class="form-group">
+                                                        <label class="form-label">Course Catagory</label>
                                                             <select class="form-control select3 select2-danger" name="cid" data-dropdown-css-class="select2-danger" style="width: 100%;" required>
                                                                 <option value="0"> Select Course Catagory</option>
                                                                 @foreach($course as $item)
@@ -66,14 +68,17 @@
 
 
                                                         <div class="form-group">
+                                                        <label class="form-label">Few Words on Blog</label>
                                                                <input name="fewParagraph" required class="form-control" type="text" placeholder="Blog few words">
 
                                                         </div>
                                                         <div class="form-group">
+                                                        <label class="form-label">Description</label>
                                                             <textarea name="description" required id="summernote1" type="text"></textarea>
 
                                                         </div>
                                                         <div class="form-group">
+                                                        <label class="form-label">Thumbnail</label>
 
                                                             <input name="thumbnail" id="course_thumbnail" type="file" class="form-control">
                                                             <input type="hidden" value="" name="file_upload_course_thumbnail" id="file_upload_course_thumbnail" />

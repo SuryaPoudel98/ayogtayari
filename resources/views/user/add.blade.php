@@ -49,17 +49,21 @@
                                                 @csrf
                                                 <div class="row">
                                                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label">Full Name</label>
                                                         <div class="form-group">
                                                             <input name="fullname" id="fullname" type="text" required class="form-control" placeholder="Full   Name">
                                                         </div>
                                                         <div class="form-group">
+                                                        <label class="form-label">Contact Number</label>
                                                             <input name="contact_number" id="contact_number" type="text" required class="form-control" placeholder="Contact Number">
                                                         </div>
                                                         <div class="form-group">
+                                                        <label class="form-label">Email Address</label>
                                                             <input name="email_address" id="email_address" type="email" required class="form-control" placeholder="Email Address">
                                                         </div>
 
                                                         <div class="form-group">
+                                                        <label class="form-label">Password</label>
                                                             <input name="password" id="password" type="password" required class="form-control" placeholder="Password">
                                                         </div>
 

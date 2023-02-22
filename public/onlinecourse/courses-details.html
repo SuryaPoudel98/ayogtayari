@@ -47,14 +47,38 @@
     <link rel="stylesheet" type="text/css" href="assets/css/shortcodes/shortcodes.css">
 
     <!-- STYLESHEETS ============================================= -->
+
     <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <link class="skin" rel="stylesheet" type="text/css" href="assets/css/color/color-1.css">
     <link rel="stylesheet" href="assets/css/combobox.css">
 
+
+
 </head>
 
 <body id="bg">
+
     <div class="page-wraper">
+        <div id="ask-modal-id" class="modal">
+            <div class="modal-content">
+                <div class="ask-modal-header">
+                    <span class="modal-ask-close">&times;</span>
+                    <h2>Send a message to teacher</h2>
+                </div>
+                <div class="modal-body">
+                    <form action="">
+                        <label for="">Question For Teacher ?</label><br>
+                        <input type="text" placeholder="Write a Question"><br><br>
+                        <label for="">Send a message :</label><br>
+                        <textarea placeholder="Send a message"></textarea><br><br>
+                        <button class="modal-ask" type="submit">Submit Question</button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
         <div id="loading-icon-bx"></div>
         <!-- Header Top ==== -->
         <header class="header rs-nav">
@@ -216,6 +240,7 @@
                 </div>
             </div>
         </header>
+
         <!-- Header Top END ==== -->
         <!-- Content -->
         <div class="page-content bg-white">
@@ -254,9 +279,16 @@
                                                 <a href="#">Course Rate 2</a>
                                             </div>
                                         </div>
+                                        <div class="combo-dropdown" style="margin-top: 10px;">
+                                            <button class="combobtn">Rs. 6,000 for 60 days </button>
+
+                                        </div>
                                     </div>
                                     <div class="course-buy-now text-center">
                                         <a href="#" class="btn  text-uppercase" style="width: 100%;"> <i class="fa-regular fa-heart"></i> Save This Courses</a>
+                                    </div>
+                                    <div class="course-buy-now text-center " style="margin-top: 5px ;">
+                                        <a href="#" class="btn  text-uppercase saved-course">Saved <i class="fa-regular fa-circle-check"></i></a>
                                     </div>
                                     <div class="course-buy-now text-center " style="margin-top: 5px;">
                                         <a href="#" class="btn  text-uppercase course-purchased">Read Course</a>
@@ -323,7 +355,7 @@
                             <div class="col-lg-9 col-md-8 col-sm-12">
 
                                 <div class="courses-post">
-                                    <div class="ttr-post-media media-effect">
+                                    <div class="ttr-post-media media-effect image-adjust">
                                         <a href="#"><img src="assets/images/blog/default/thum1.jpg" alt=""></a>
                                     </div>
                                     <div class="course-sticky-background">
@@ -331,33 +363,29 @@
                                             <div class="wrapper-scrollable">
                                                 <div class="icon-scroll"><i id="left" class="fa-solid fa-angle-left"></i></div>
                                                 <ul class="tabs-box-scroll">
-                                                    <li class="tab-scroll active-scroll" onclick="li()">Coding
-                                                        <ul class="sub-tabs" id="sub-tabs">
-                                                            <li> <a href="">Digital Logic System And</a></li>
-                                                            <li>lesson2</li>
-                                                            <li>lesson3</li>
-                                                        </ul>
-                                                        <script>
-                                                            function li() {
-                                                                var x = document.getElementById("sub-tabs");
-                                                                if (x.style.display === "none") {
-                                                                    x.style.display = "block";
-                                                                } else {
-                                                                    x.style.display = "none";
-                                                                }
-                                                            }
-                                                        </script>
-                                                    </li>
-                                                    <li class="tab-scroll " onclick="li()">JavaScript</li>
-                                                    <li class="tab-scroll">Podcasts</li>
-                                                    <li class="tab-scroll">Databases</li>
-                                                    <li class="tab-scroll">Web Development</li>
-                                                    <li class="tab-scroll">Unboxing</li>
-                                                    <li class="tab-scroll">History</li>
+                                                    <li class="tab-scroll active-scroll"><a class="lesson-toggle">Curriculum</a>
 
+                                                    </li>
+                                                    <li class="tab-scroll ">MCQs
+
+                                                    </li>
+                                                    <li class="tab-scroll">Videos</li>
+                                                    <li class="tab-scroll">News & Articles</li>
+                                                    <li class="tab-scroll">Notes</li>
+                                                    <li class="tab-scroll">Exams</li>
                                                 </ul>
                                                 <div class="icon-scroll"><i id="right" class="fa-solid fa-angle-right"></i></div>
                                             </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="alert-message" id="alert-message">
+                                        <div class="message-sucess-fullysend">
+                                            <p>Question Sucessfully Send. <i class="fa-regular fa-circle-check"></i> </p>
+                                        </div>
+                                        <div class="cross-mark-question" onclick="cb(1)">
+                                            <i class="fa-solid fa-xmark"></i>
                                         </div>
                                     </div>
                                     <div class="ttr-post-info">
@@ -484,15 +512,17 @@
                                         </div>
                                         <div class="instructor-info">
                                             <h6>Keny White </h6>
+
                                             <span>Professor</span>
+                                            <div class="modal-margin"> <button id="modal-ask-button">Ask a question<i class="fa-solid fa-comment-medical"></i></button></div>
+
                                             <ul class="list-inline m-tb10">
                                                 <li><a href="#" class="btn sharp-sm facebook"><i class="fa fa-facebook"></i></a></li>
                                                 <li><a href="#" class="btn sharp-sm twitter"><i class="fa fa-twitter"></i></a></li>
                                                 <li><a href="#" class="btn sharp-sm linkedin"><i class="fa fa-linkedin"></i></a></li>
                                                 <li><a href="#" class="btn sharp-sm google-plus"><i class="fa fa-google-plus"></i></a></li>
                                             </ul>
-                                            <p class="m-b0">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled
-                                                it to make a type specimen book. It has survived not only five centuries</p>
+                                            <p class="m-b0">asas</p>
                                         </div>
                                     </div>
                                     <div class="instructor-bx">
@@ -501,6 +531,7 @@
                                         </div>
                                         <div class="instructor-info">
                                             <h6>Keny White </h6>
+                                            <div class="modal-margin"> <button id="modal-ask-button">Ask a question<i class="fa-solid fa-comment-medical"></i></button></div>
                                             <span>Professor</span>
                                             <ul class="list-inline m-tb10">
                                                 <li><a href="#" class="btn sharp-sm facebook"><i class="fa fa-facebook"></i></a></li>
@@ -508,8 +539,7 @@
                                                 <li><a href="#" class="btn sharp-sm linkedin"><i class="fa fa-linkedin"></i></a></li>
                                                 <li><a href="#" class="btn sharp-sm google-plus"><i class="fa fa-google-plus"></i></a></li>
                                             </ul>
-                                            <p class="m-b0">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled
-                                                it to make a type specimen book. It has survived not only five centuries</p>
+                                            <p class="m-b0">asdsad</p>
                                         </div>
                                     </div>
                                 </div>
@@ -531,7 +561,7 @@
                                         <div class="review-bar">
                                             <div class="bar-bx">
                                                 <div class="side">
-                                                    <div>5 star</div>
+                                                    <div class="point-click">5 star</div>
                                                 </div>
                                                 <div class="middle">
                                                     <div class="bar-container">
@@ -544,7 +574,7 @@
                                             </div>
                                             <div class="bar-bx">
                                                 <div class="side">
-                                                    <div>4 star</div>
+                                                    <div class="point-click">4 star</div>
                                                 </div>
                                                 <div class="middle">
                                                     <div class="bar-container">
@@ -557,7 +587,7 @@
                                             </div>
                                             <div class="bar-bx">
                                                 <div class="side">
-                                                    <div>3 star</div>
+                                                    <div class="point-click">3 star</div>
                                                 </div>
                                                 <div class="middle">
                                                     <div class="bar-container">
@@ -570,7 +600,7 @@
                                             </div>
                                             <div class="bar-bx">
                                                 <div class="side">
-                                                    <div>2 star</div>
+                                                    <div class="point-click">2 star</div>
                                                 </div>
                                                 <div class="middle">
                                                     <div class="bar-container">
@@ -583,7 +613,7 @@
                                             </div>
                                             <div class="bar-bx">
                                                 <div class="side">
-                                                    <div>1 star</div>
+                                                    <div class="point-click">1 star</div>
                                                 </div>
                                                 <div class="middle">
                                                     <div class="bar-container">
@@ -738,7 +768,90 @@
     <script src="assets/js/contact.js"></script>
     <script src="assets/js/dragging.js"></script>
     <script src="assets/js/combobox.js"></script>
+    <script>
+        var modal = document.getElementById("ask-modal-id");
+        var modalopen = document.getElementById("modal-ask-button");
+        var modalclose = document.getElementsByClassName("modal-ask-close")[0];
+        modalopen.onclick = function() {
+            modal.style.display = "block";
+        }
 
+        modalclose.onclick = function() {
+            modal.style.display = "none";
+        }
+    </script>
+
+    <script>
+        $('.cursor-btn').click(function() {
+
+            $(this).next('ul.sub-class-show').toggleClass("sub-show");
+
+        });
+
+        $('.sub-cursor').click(function() {
+
+            $(this).next('.sub-menu .child-show1').toggleClass("sub-show");
+
+
+        });
+
+        function cb(x) {
+            if (x == 1) document.getElementById("alert-message").style.display = "none";
+        }
+
+        function subcourse(x) {
+            if (x == 1) {
+                $('.sub1').toggleClass("sub-show1");
+                $('.sub2').removeClass("sub-show1");
+                $('.sub3').removeClass("sub-show1");
+                $('.sub4').removeClass("sub-show1");
+                $('.sub5').removeClass("sub-show1");
+                $('.sub6').removeClass("sub-show1");
+            }
+            if (x == 2) {
+                $('.sub2').toggleClass("sub-show1");
+                $('.sub1').removeClass("sub-show1");
+                $('.sub3').removeClass("sub-show1");
+                $('.sub4').removeClass("sub-show1");
+                $('.sub5').removeClass("sub-show1");
+                $('.sub6').removeClass("sub-show1");
+            }
+            if (x == 3) {
+                $('.sub3').toggleClass("sub-show1");
+                $('.sub1').removeClass("sub-show1");
+                $('.sub2').removeClass("sub-show1");
+                $('.sub4').removeClass("sub-show1");
+                $('.sub5').removeClass("sub-show1");
+                $('.sub6').removeClass("sub-show1");
+            }
+
+            if (x == 4) {
+                $('.sub4').toggleClass("sub-show1");
+                $('.sub1').removeClass("sub-show1");
+                $('.sub2').removeClass("sub-show1");
+                $('.sub3').removeClass("sub-show1");
+                $('.sub5').removeClass("sub-show1");
+                $('.sub6').removeClass("sub-show1");
+            }
+            if (x == 5) {
+                $('.sub5').toggleClass("sub-show1");
+                $('.sub1').removeClass("sub-show1");
+                $('.sub2').removeClass("sub-show1");
+                $('.sub3').removeClass("sub-show1");
+                $('.sub4').removeClass("sub-show1");
+                $('.sub6').removeClass("sub-show1");
+            }
+            if (x == 6) {
+                $('.sub6').toggleClass("sub-show1");
+                $('.sub1').removeClass("sub-show1");
+                $('.sub2').removeClass("sub-show1");
+                $('.sub3').removeClass("sub-show1");
+                $('.sub4').removeClass("sub-show1");
+                $('.sub5').removeClass("sub-show1");
+            }
+
+        }
+    </script>
 </body>
 
 </html>

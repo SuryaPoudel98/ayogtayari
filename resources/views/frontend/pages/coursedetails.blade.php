@@ -14,10 +14,17 @@ if (session()->get('sessionUserId') != "") {
         ->where('endDate', '>=', date('Y-m-d'))
         ->first();
 
-    // dd($courses->course_or_quiz_id);
+    $bookmarks = \DB::select("select id from bookmarkcourses where course_or_quiz_id='" . $course[0]->course_id . "' and user_id='" . $user_id . "' and type=0");
+    $curriculam = \DB::select("select lesson, display_name from course_curriculumns where course_id='" . $course[0]->course_id . "' limit 1");
+    $course_mcqs = \DB::select("select lesson, display_name from course_mcqs where course_id='" . $course[0]->course_id . "' limit 1");
+    $course_newsor_articles = \DB::select("select id, display_name from course_newsor_articles where course_id='" . $course[0]->course_id . "' limit 1");
+    $course_notes = \DB::select("select lesson, display_name from course_notes where course_id='" . $course[0]->course_id . "' limit 1");
+    $course_videos = \DB::select("select lesson, display_name from course_videos where course_id='" . $course[0]->course_id . "' limit 1");
+    $course_others = \DB::select("select id, display_name from course_others where course_id='" . $course[0]->course_id . "' limit 1");
 }
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -86,6 +93,34 @@ if (session()->get('sessionUserId') != "") {
 
 <body id="bg">
     <div class="page-wraper">
+
+
+        <div id="ask-modal-id" class="modal">
+            <div class="modal-content">
+                <div class="ask-modal-header">
+                    <span class="modal-ask-close">&times;</span>
+                    <h2>Send a message to teacher</h2>
+                </div>
+                <div class="modal-body">
+                    <form action="/askQuestionToTeacher" method="POST">
+                        @csrf
+                        <input type="hidden" id="course_or_quiz_id" name="course_or_quiz_id" value="{{@$courses->course_or_quiz_id}}">
+                        <input type="hidden" id="teacher_id" name="teacher_id" value="">
+                        <input type="hidden" id="type" name="type" value="0">
+                        <input type="hidden" id="whoIsHe" name="whoIsHe" value="0">
+                        <input type="hidden" name="user_id" value="{{@$user_id}}">
+                        <label for="">Question For Teacher ?</label><br>
+                        <input type="text" required name="discussionTitle" placeholder="Write a Question"><br><br>
+                        <label for="">Send a message :</label><br>
+                        <textarea name="discussionNote" required placeholder="Send a message"></textarea><br><br>
+                        <button class="modal-ask" type="submit">Submit Question</button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
         <div id="loading-icon-bx"></div>
         <!-- Header Top ==== -->
         @include('frontend.innerblade.header')
@@ -126,17 +161,34 @@ if (session()->get('sessionUserId') != "") {
                                         <div class="combo-dropdown" onclick="myFunction()">
                                             <button class="combobtn">Buy Now This Course <i class="uil uil-angle-down"></i></button>
                                             <div id="myDropdown" class="dropdown-content">
+                                                
                                                 @foreach($coursePricing as $pricing)
-                                                <a href="/addtobasket/{{@$course[0]->course_id}}/{{$pricing->course_pricing_id }}/course">Rs. {{$pricing->sell_price}}.00</a>
+                                                @if(@$user_id!="")
+                                                <a href="/addtobasket/{{@$course[0]->course_id}}/{{$pricing->course_pricing_id }}/course">Rs. {{$pricing->sell_price}}.00 for {{$pricing->no_of_days}}</a>
+                                                @else
+                                                <a href="/user-login">Rs. {{$pricing->sell_price}}.00 for {{$pricing->no_of_days}} days</a>
+                                                @endif 
                                                 @endforeach
 
                                             </div>
                                         </div>
                                     </div>
-                                    @else
-                                    <div class="course-buy-now text-center " style="margin-top: 5px;">
-                                        <a href="/coursecontent/{{ @$course[0]->course_id}}/0" class="btn  text-uppercase course-purchased">Read Course</a>
+                                    <div class="course-buy-now text-center">
+                                        <a href="/user-login" class="btn  text-uppercase" style="width: 100%;"> <i class="fa-regular fa-heart"></i> Save This Course</a>
                                     </div>
+                                    @else
+                                    @if(@$bookmarks[0]->id=="")
+                                    <div class="course-buy-now text-center">
+                                        <a href="/savethiscourse/{{$course[0]->course_id}}/{{$user_id}}/0" class="btn  text-uppercase" style="width: 100%;"> <i class="fa-regular fa-heart"></i> Save This Course</a>
+                                    </div>
+                                    @else
+                                    <div class="course-buy-now text-center " style="margin-top: 5px ;">
+                                        <a href="/removethiscourse/{{$course[0]->course_id}}/{{$user_id}}/0" class="btn  text-uppercase saved-course">Saved <i class="fa-regular fa-circle-check"></i></a>
+                                    </div>
+                                    @endif
+                                    <!-- <div class="course-buy-now text-center " style="margin-top: 5px;">
+                                        <a href="/coursecontent/{{ @$course[0]->course_id}}/0" class="btn  text-uppercase course-purchased">Read Course</a>
+                                    </div> -->
                                     @endif
 
                                     <!-- <div class="course-price">
@@ -152,8 +204,8 @@ if (session()->get('sessionUserId') != "") {
                                         @endif
 
                                     </div> -->
-                                   
-                                 
+
+
                                     <div class="cours-more-info">
                                         <div class="review">
                                             <span>3 Review</span>
@@ -177,6 +229,7 @@ if (session()->get('sessionUserId') != "") {
                                             @foreach($similarcourses as $similarcourse)
                                             <div class="widget-post clearfix">
                                                 <div class="ttr-post-media"> <img src="/uploads/Postimg/{{@$similarcourse->thumbnail}}" width="200" height="143" alt=""> </div>
+
                                                 <div class="ttr-post-info">
                                                     <div class="ttr-post-header">
                                                         <h6 class="post-title"><a href="{{url('coursedetails', $similarcourse->course_id)}}">{{@$similarcourse->course_title}}</a></h6>
@@ -207,24 +260,63 @@ if (session()->get('sessionUserId') != "") {
                             <div class="col-lg-9 col-md-8 col-sm-12">
 
                                 <div class="courses-post">
-                                    <div class="ttr-post-media media-effect">
-                                        <a href="#"><img src="assets/images/blog/default/thum1.jpg" alt=""></a>
+                                    <div class="ttr-post-media media-effect image-adjust">
+                                        <a href="#"><img src="/uploads/Postimg/{{@$course[0]->thumbnail}}" alt=""></a>
                                     </div>
                                     <div class="course-sticky-background">
+                                        @if(@$courses->course_or_quiz_id!="")
                                         <div class="wrapper-scrollable">
                                             <div class="icon-scroll"><i id="left" class="fa-solid fa-angle-left"></i></div>
                                             <ul class="tabs-box-scroll">
-                                                <li class="tab-scroll active-scroll">Curriculum</li>
-                                                <li class="tab-scroll ">MCQs</li>
-                                                <li class="tab-scroll">Video</li>
-                                                <li class="tab-scroll">Note</li>
-                                                <li class="tab-scroll">News & Article</li>
-                                                <li class="tab-scroll">Others</li>
 
+                                                @if(@$curriculam[0]->lesson!="")
+                                                <a href="/coursesubdetails/course_curriculumns/{{@$course[0]->course_id}}">
+                                                    <li class="tab-scroll active-scroll">Curriculum</li>
+                                                </a>
+                                                @endif
+                                                @if(@$course_mcqs[0]->lesson!="")
+                                                <a href="/coursesubdetails/course_mcqs/{{@$course[0]->course_id}}">
+                                                    <li class="tab-scroll ">MCQs</li>
+                                                </a>
+                                                @endif
+                                                @if(@$course_videos[0]->lesson!="")
+                                                <a href="/coursesubdetails/course_videos/{{@$course[0]->course_id}}">
+                                                    <li class="tab-scroll">Video</li>
+                                                </a>
+                                                @endif
+                                                @if(@$course_notes[0]->lesson!="")
+                                                <a href="/coursesubdetails/course_notes/{{@$course[0]->course_id}}">
+                                                    <li class="tab-scroll">Note</li>
+                                                </a>
+                                                @endif
+                                                @if(@$course_newsor_articles[0]->id!="")
+                                                <a href="/coursesubdetails/course_newsor_articles/{{@$course[0]->course_id}}">
+                                                    <li class="tab-scroll">News & Article</li>
+                                                </a>
+                                                @endif
+                                                @if(@$course_others[0]->id!="")
+                                                <a href="/coursesubdetails/course_others/{{@$course[0]->course_id}}">
+                                                    <li class="tab-scroll">$course_others[0]->display_nam</li>
+                                                </a>
+                                                @endif
                                             </ul>
                                             <div class="icon-scroll"><i id="right" class="fa-solid fa-angle-right"></i></div>
                                         </div>
-                                    </div>
+                                        @endif
+                                    </div>@if(session()->has('message'))
+                                    <div class="alert-message" id="alert-message">
+                                        <div class="message-sucess-fullysend">
+                                            <p>
+
+                                                {{ session()->get('message') }}
+
+                                                <i class="fa-regular fa-circle-check"></i>
+                                            </p>
+                                        </div>
+                                        <div class="cross-mark-question" onclick="cb(1)">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </div>
+                                    </div>@endif
                                     <div class="ttr-post-info">
                                         <div class="ttr-post-title ">
                                             <h2 class="post-title">{{@$course[0]->course_title}}</h2>
@@ -354,6 +446,9 @@ if (session()->get('sessionUserId') != "") {
                                         </div>
                                         <div class="instructor-info">
                                             <h6>{{$author->fullname}}</h6>
+                                            @if(@$courses->course_or_quiz_id!="")
+                                            <div class="modal-margin"> <button id="modal-ask-button" onclick="showModel('{{$author->teacher_id}}')">Ask a question<i class="fa-solid fa-comment-medical"></i></button></div>
+                                            @endif
                                             <span>{{$author->profession}}</span>
                                             <ul class="list-inline m-tb10">
                                                 <li><a href="#" class="btn sharp-sm facebook"><i class="fa fa-facebook"></i></a></li>
@@ -487,105 +582,99 @@ if (session()->get('sessionUserId') != "") {
     <!-- Revolution JavaScripts Files -->
     <script src=" {{asset('onlinecourse/assets/vendors/revolution/js/jquery.themepunch.tools.min.js')}}"></script>
     <script src=" {{asset('onlinecourse/assets/vendors/revolution/js/jquery.themepunch.revolution.min.js')}}"></script>
-    <!-- Slider revolution 5.0 Extensions  (Load Extensions only on Local File Systems !  The following part can be removed on Server for On Demand Loading) -->
-    <!-- <script src=" {{asset('onlinecourse/assets/vendors/revolution/js/extensions/revolution.extension.actions.min.js')}}" "></script> -->
-    <!-- <script src=" {{asset('onlinecourse/assets/vendors/revolution/js/extensions/revolution.extension.carousel.min.js')}}" "></script> -->
-    <!-- <script src=" {{asset('onlinecourse/assets/vendors/revolution/js/extensions/revolution.extension.kenburn.min.js')}}" "></script> -->
+
     <script src=" {{asset('onlinecourse/assets/vendors/revolution/js/extensions/revolution.extension.layeranimation.min.js')}}"></script>
     <script src=" {{asset('onlinecourse/assets/vendors/revolution/js/extensions/revolution.extension.migration.min.js')}}"></script>
     <!-- <script src=" {{asset('onlinecourse/assets/vendors/revolution/js/extensions/revolution.extension.navigation.min.js')}}" "></script> -->
     <script src=" {{asset('onlinecourse/assets/vendors/revolution/js/extensions/revolution.extension.parallax.min.js')}}"></script>
     <script src=" {{asset('onlinecourse/assets/vendors/revolution/js/extensions/revolution.extension.slideanims.min.js')}}"></script>
     <script src=" {{asset('onlinecourse/assets/js/combobox.js')}}"></script>
+    <script src="{{asset('onlinecourse/assets/js/dragging.js')}}"></script>
     <!-- <script src=" {{asset('onlinecourse/assets/vendors/revolution/js/extensions/revolution.extension.video.min.js')}}" "></script> -->
     <script>
-        jQuery(document).ready(function() {
-            var ttrevapi;
-            var tpj = jQuery;
-            if (tpj(" #rev_slider_486_1 ").revolution == undefined) {
-                revslider_showDoubleJqueryError(" #rev_slider_486_1 ");
-            } else {
-                ttrevapi = tpj(" #rev_slider_486_1 ").show().revolution({
-                    sliderType: " standard ",
-                    jsFileLocation: " {{asset('onlinecourse/assets/vendors/revolution/js/ ",
-                    sliderLayout: "fullwidth ",
-                    dottedOverlay: "none ",
-                    delay: 9000,
-                    navigation: {
-                        keyboardNavigation: "on ",
-                        keyboard_direction: "horizontal ",
-                        mouseScrollNavigation: "off ",
-                        mouseScrollReverse: "default ",
-                        onHoverStop: "on ",
-                        touch: {
-                            touchenabled: "on ",
-                            swipe_threshold: 75,
-                            swipe_min_touches: 1,
-                            swipe_direction: "horizontal ",
-                            drag_block_vertical: false
-                        },
-                        arrows: {
-                            style: "uranus ",
-                            enable: true,
-                            hide_onmobile: false,
-                            hide_onleave: false,
+        var modalclose = document.getElementsByClassName("modal-ask-close")[0];
 
-                            tmp: '',
-                            left: {
-                                h_align: "left ",
-                                v_align: "center ",
-                                h_offset: 10,
-                                v_offset: 0
-                            },
-                            right: {
-                                h_align: "right ",
-                                v_align: "center ",
-                                h_offset: 10,
-                                v_offset: 0
-                            }
-                        },
 
-                    },
-                    viewPort: {
-                        enable: true,
-                        outof: "pause ",
-                        visible_area: "80% ",
-                        presize: false
-                    },
-                    responsiveLevels: [1240, 1024, 778, 480],
-                    visibilityLevels: [1240, 1024, 778, 480],
-                    gridwidth: [1240, 1024, 778, 480],
-                    gridheight: [768, 600, 600, 600],
-                    lazyType: "none ",
-                    parallax: {
-                        type: "scroll ",
-                        origo: "enterpoint ",
-                        speed: 400,
-                        levels: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 46, 47, 48, 49, 50, 55],
-                        type: "scroll ",
-                    },
-                    shadow: 0,
-                    spinner: "off ",
-                    stopLoop: "off ",
-                    stopAfterLoops: -1,
-                    stopAtSlide: -1,
-                    shuffle: "off ",
-                    autoHeight: "off ",
-                    hideThumbsOnMobile: "off ",
-                    hideSliderAtLimit: 0,
-                    hideCaptionAtLimit: 0,
-                    hideAllCaptionAtLilmit: 0,
-                    debugMode: false,
-                    fallbacks: {
-                        simplifyAll: "off ",
-                        nextSlideOnWindowFocus: "off ",
-                        disableFocusListener: false,
-                    }
-                });
-            }
-        });
+        function showModel(id) {
+
+            document.getElementById("ask-modal-id").style.display = "block";
+            document.getElementById("teacher_id").value = id;
+        }
+        modalclose.onclick = function() {
+            document.getElementById("ask-modal-id").style.display = "none";
+        }
     </script>
+    <script>
+        $('.cursor-btn').click(function() {
 
+            $(this).next('ul.sub-class-show').toggleClass("sub-show");
+
+        });
+
+        $('.sub-cursor').click(function() {
+
+            $(this).next('.sub-menu .child-show1').toggleClass("sub-show");
+
+
+        });
+
+        function cb(x) {
+            if (x == 1) document.getElementById("alert-message").style.display = "none";
+        }
+
+        function subcourse(x) {
+            if (x == 1) {
+                $('.sub1').toggleClass("sub-show1");
+                $('.sub2').removeClass("sub-show1");
+                $('.sub3').removeClass("sub-show1");
+                $('.sub4').removeClass("sub-show1");
+                $('.sub5').removeClass("sub-show1");
+                $('.sub6').removeClass("sub-show1");
+            }
+            if (x == 2) {
+                $('.sub2').toggleClass("sub-show1");
+                $('.sub1').removeClass("sub-show1");
+                $('.sub3').removeClass("sub-show1");
+                $('.sub4').removeClass("sub-show1");
+                $('.sub5').removeClass("sub-show1");
+                $('.sub6').removeClass("sub-show1");
+            }
+            if (x == 3) {
+                $('.sub3').toggleClass("sub-show1");
+                $('.sub1').removeClass("sub-show1");
+                $('.sub2').removeClass("sub-show1");
+                $('.sub4').removeClass("sub-show1");
+                $('.sub5').removeClass("sub-show1");
+                $('.sub6').removeClass("sub-show1");
+            }
+
+            if (x == 4) {
+                $('.sub4').toggleClass("sub-show1");
+                $('.sub1').removeClass("sub-show1");
+                $('.sub2').removeClass("sub-show1");
+                $('.sub3').removeClass("sub-show1");
+                $('.sub5').removeClass("sub-show1");
+                $('.sub6').removeClass("sub-show1");
+            }
+            if (x == 5) {
+                $('.sub5').toggleClass("sub-show1");
+                $('.sub1').removeClass("sub-show1");
+                $('.sub2').removeClass("sub-show1");
+                $('.sub3').removeClass("sub-show1");
+                $('.sub4').removeClass("sub-show1");
+                $('.sub6').removeClass("sub-show1");
+            }
+            if (x == 6) {
+                $('.sub6').toggleClass("sub-show1");
+                $('.sub1').removeClass("sub-show1");
+                $('.sub2').removeClass("sub-show1");
+                $('.sub3').removeClass("sub-show1");
+                $('.sub4').removeClass("sub-show1");
+                $('.sub5').removeClass("sub-show1");
+            }
+
+        }
+    </script>
 </body>
 
 </html>

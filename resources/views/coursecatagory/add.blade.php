@@ -51,6 +51,7 @@
                                                 @csrf
                                                 <div class="row">
                                                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                                    <label class="form-label" for="inputFile">Course  Catagory Name</label>
                                                         <div class="form-group">
                                                             <input name="catagory_name" id="catagory_name" type="text" class="form-control" placeholder="Course Catagory  Name">
 
@@ -122,6 +123,7 @@
                                             <div class="row">
                                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                     <div class="form-group">
+                                                    <label class="form-label" for="inputFile">Course  Catagory Name</label>
                                                         <select class="form-control select3 select2-danger" name="cid" data-dropdown-css-class="select2-danger" style="width: 100%;" required>
                                                             @foreach($subCatagory as $item)
                                                             <option value="{{$item->cid}}">{{$item->catagory_name}}</option>
@@ -130,6 +132,7 @@
                                                     </div>
 
                                                     <div class="form-group">
+                                                    <label class="form-label" for="inputFile">Course Sub  Catagory Name</label>
                                                         <input name="sub_catagory_name" id="sub_catagory_name" type="text" class="form-control" placeholder="Course Sub Catagory  Name">
                                                     </div>
 
@@ -197,6 +200,7 @@
                                             <div class="row">
                                                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                     <div class="form-group">
+                                                    <label class="form-label" for="inputFile">Course Sub  Catagory Name</label>
                                                         <select class="form-control select3 select2-danger" name="s_cid" data-dropdown-css-class="select2-danger" style="width: 100%;" required>
                                                             @foreach($courseSubCatagory as $item)
                                                             <option value="{{$item->s_cid}}">{{$item->sub_catagory_name}}</option>
@@ -204,6 +208,7 @@
                                                         </select>
                                                     </div>
                                                     <div class="form-group">
+                                                    <label class="form-label" for="inputFile">Course Child  Catagory Name</label>
                                                         <input name="child_catagory_name" type="text" class="form-control" placeholder="Course Child Catagory Name">
                                                     </div>
                                                     <div class="row">

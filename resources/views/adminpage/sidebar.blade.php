@@ -26,10 +26,8 @@
                     <li>
                         <a class="has-arrow" href="all-students.html" aria-expanded="false"><span class="educate-icon educate-interface icon-wrap"></span> <span class="mini-click-non">Payments</span></a>
                         <ul class="submenu-angle" aria-expanded="false">
-                            <li><a title="All Students" href=""><span class="mini-sub-pro">Payment Transactions</span></a></li>
-                            <li><a title="Add Students" href="/addPayment"><span class="mini-sub-pro">Add Payment</span></a></li>
-                            <li><a title="Edit Students" href=""><span class="mini-sub-pro">Edit Payment</span></a></li>
-
+                            <li><a title="All Students" href="/paymentlist"><span class="mini-sub-pro">Payment Transactions</span></a></li>
+                            <!-- <li><a title="Add Students" href="/addPayment"><span class="mini-sub-pro">Add Payment</span></a></li> -->
                         </ul>
                     </li>
 
@@ -58,7 +56,7 @@
                 </li>
                 <li>
                     <a class="has-arrow" href="/questionbank" aria-expanded="false"><span class="educate-icon educate-library icon-wrap"></span> <span class="mini-click-non">Question Bank</span></a>
-                  
+
                 </li>
                 <li>
                     <a class="has-arrow" href="all-courses.html" aria-expanded="false"><span class="educate-icon educate-department icon-wrap"></span> <span class="mini-click-non">Quiz</span></a>
@@ -78,9 +76,10 @@
                     </ul>
                 </li>
                 <li>
-                    <a class="has-arrow" href="" aria-expanded="false"><span class="educate-icon educate-charts icon-wrap"></span> <span class="mini-click-non">Enrolls</span></a>
+                    <a class="has-arrow" href="" aria-expanded="false"><span class="educate-icon educate-charts icon-wrap"></span> <span class="mini-click-non">Enrollment</span></a>
                     <ul class="submenu-angle chart-mini-nb-dp" aria-expanded="false">
-                        <li><a title="Bar Charts" href="/enroll"><span class="mini-sub-pro">Add Enrolls</span></a></li>
+                        <li><a title="Bar Charts" href="/enroll"><span class="mini-sub-pro">Add </span></a></li>
+                        <li><a title="Bar Charts" href="/listenroll"><span class="mini-sub-pro">List </span></a></li>
 
                     </ul>
                 </li>
@@ -92,14 +91,7 @@
 
                     </ul>
                 </li>
-                <li>
-                    <a class="has-arrow" href="" aria-expanded="false"><span class="educate-icon educate-apps icon-wrap"></span> <span class="mini-click-non">Customers</span></a>
-                    <ul class="submenu-angle chart-mini-nb-dp" aria-expanded="false">
-                        <li><a title="Bar Charts" href="/addCustomers"><span class="mini-sub-pro">Add Customers</span></a></li>
-                        <li><a title="Line Charts" href=""><span class="mini-sub-pro">List Customers</span></a></li>
 
-                    </ul>
-                </li>
                 </ul>
             </nav>
         </div>

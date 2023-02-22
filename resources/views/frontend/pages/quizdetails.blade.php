@@ -14,6 +14,7 @@ if (session()->get('sessionUserId') != "") {
         ->where('endDate', '>=', date('Y-m-d'))
         ->first();
 
+    $bookmarks = \DB::select("select id from bookmarkcourses where course_or_quiz_id='" . $quizes[0]->quiz_id . "' and user_id='" . $user_id . "' and type=1");
     // dd($courses->course_or_quiz_id);
 }
 
@@ -86,6 +87,32 @@ if (session()->get('sessionUserId') != "") {
 
 <body id="bg">
     <div class="page-wraper">
+        <div id="ask-modal-id" class="modal">
+            <div class="modal-content">
+                <div class="ask-modal-header">
+                    <span class="modal-ask-close">&times;</span>
+                    <h2>Send a message to teacher</h2>
+                </div>
+                <div class="modal-body">
+                    <form action="/askQuestionToTeacher" method="POST">
+                        @csrf
+                        <input type="hidden" id="course_or_quiz_id" name="course_or_quiz_id" value="{{@$courses->course_or_quiz_id}}">
+                        <input type="hidden" id="teacher_id" name="teacher_id" value="">
+                        <input type="hidden" id="type" name="type" value="1">
+                        <input type="hidden" id="whoIsHe" name="whoIsHe" value="0">
+                        <input type="hidden" name="user_id" value="{{@$user_id}}">
+                        <label for="">Question For Teacher ?</label><br>
+                        <input type="text" required name="discussionTitle" placeholder="Write a Question"><br><br>
+                        <label for="">Send a message :</label><br>
+                        <textarea name="discussionNote" required placeholder="Send a message"></textarea><br><br>
+                        <button class="modal-ask" type="submit">Submit Question</button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
         <div id="loading-icon-bx"></div>
         <!-- Header Top ==== -->
         @include('frontend.innerblade.header')
@@ -119,12 +146,28 @@ if (session()->get('sessionUserId') != "") {
                                             <button onclick="myFunction()" class="combobtn">Buy Now This Quiz <i class="uil uil-angle-down"></i></button>
                                             <div id="myDropdown" class="dropdown-content">
                                                 @foreach($quizpricing as $pricing)
+                                                @if(@$user_id!="")
                                                 <a href="/addtobasket/{{@$quizes[0]->quiz_id}}/{{$pricing->quiz_pricing_id }}/quiz">Rs. {{$pricing->sell_price}}.00</a>
+                                                @else
+                                                <a href="/user-login">Rs. {{$pricing->sell_price}}.00</a>
+                                                @endif
                                                 @endforeach
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="course-buy-now text-center">
+                                        <a href="/user-login" class="btn  text-uppercase" style="width: 100%;"> <i class="fa-regular fa-heart"></i> Save This Quiz</a>
+                                    </div>
                                     @else
+                                    @if(@$bookmarks[0]->id=="")
+                                    <div class="course-buy-now text-center">
+                                        <a href="/savethiscourse/{{$quizes[0]->quiz_id}}/{{$user_id}}/1" class="btn  text-uppercase" style="width: 100%;"> <i class="fa-regular fa-heart"></i> Save This Quiz</a>
+                                    </div>
+                                    @else
+                                    <div class="course-buy-now text-center " style="margin-top: 5px ;">
+                                        <a href="/removethiscourse/{{$quizes[0]->quiz_id}}/{{$user_id}}/1" class="btn  text-uppercase saved-course">Saved <i class="fa-regular fa-circle-check"></i></a>
+                                    </div>
+                                    @endif
                                     <div class="course-buy-now text-center " style="margin-top: 5px;">
                                         <a href="{{url('quizcontent', $quizes[0]->quiz_id )}}" class="btn  text-uppercase course-purchased">Take This Quiz</a>
                                     </div>
@@ -189,7 +232,21 @@ if (session()->get('sessionUserId') != "") {
                             <div class="col-lg-9 col-md-8 col-sm-12">
 
                                 <div class="courses-post">
-                                    <div class="ttr-post-media media-effect">
+                                    @if(session()->has('message'))
+                                    <div class="alert-message" id="alert-message">
+                                        <div class="message-sucess-fullysend">
+                                            <p>
+
+                                                {{ session()->get('message') }}
+
+                                                <i class="fa-regular fa-circle-check"></i>
+                                            </p>
+                                        </div>
+                                        <div class="cross-mark-question" onclick="cb(1)">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </div>
+                                    </div>@endif
+                                    <div class="ttr-post-media media-effect image-adjust">
                                         <a href="#"><img src="/uploads/Postimg/{{@$quizes[0]->thumbnail}}" alt=""></a>
                                     </div>
 
@@ -215,6 +272,9 @@ if (session()->get('sessionUserId') != "") {
                                         </div>
                                         <div class="instructor-info">
                                             <h6>{{$author->fullname}}</h6>
+                                            @if(@$courses->course_or_quiz_id!="")
+                                            <div class="modal-margin"> <button id="modal-ask-button" onclick="showModel('{{$author->teacher_id}}')">Ask a question<i class="fa-solid fa-comment-medical"></i></button></div>
+                                            @endif
                                             <span>{{$author->profession}}</span>
                                             <ul class="list-inline m-tb10">
                                                 <li><a href="#" class="btn sharp-sm facebook"><i class="fa fa-facebook"></i></a></li>
@@ -346,7 +406,23 @@ if (session()->get('sessionUserId') != "") {
     <script src="{{asset('onlinecourse/assets/js/contact.js')}}"></script>
     <script src="{{asset('onlinecourse/assets/js/dragging.js')}}"></script>
     <script src="{{asset('onlinecourse/assets/js/combobox.js')}}"></script>
+    <script>
+        var modalclose = document.getElementsByClassName("modal-ask-close")[0];
 
+
+        function cb(x) {
+            if (x == 1) document.getElementById("alert-message").style.display = "none";
+        }
+
+        function showModel(id) {
+
+            document.getElementById("ask-modal-id").style.display = "block";
+            document.getElementById("teacher_id").value = id;
+        }
+        modalclose.onclick = function() {
+            document.getElementById("ask-modal-id").style.display = "none";
+        }
+    </script>
 </body>
 
 </html>

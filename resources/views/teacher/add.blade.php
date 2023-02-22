@@ -49,18 +49,23 @@
                                                 <div class="row">
                                                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                         <div class="form-group">
+                                                        <label class="form-label" for="inputFile">Full Name</label>
                                                             <input name="fullname" required id="fullname" type="text" class="form-control" placeholder="Full   Name">
                                                         </div>
                                                         <div class="form-group">
+                                                        <label class="form-label" for="inputFile">Address</label>
                                                             <input name="address" id="address" required type="text" class="form-control" placeholder="Address">
                                                         </div>
                                                         <div class="form-group">
+                                                        <label class="form-label" for="inputFile">Mobile Number</label>
                                                             <input name="mobile_number" required id="mobile_number" type="number" class="form-control" placeholder="Mobile Number">
                                                         </div>
                                                         <div class="form-group">
+                                                        <label class="form-label" for="inputFile">Introduction</label>
                                                             <textarea name="introduction" required placeholder="Introduction"></textarea>
                                                         </div>
                                                         <div class="form-group">
+                                                        <label class="form-label" for="inputFile">Profession</label>
                                                             <input name="profession" required id="profession" type="text" class="form-control" placeholder="Profession">
                                                         </div>
 

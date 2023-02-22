@@ -64,7 +64,7 @@ class BasketController extends Controller
         $basket->save();
         // /basketDetails/{user_id}
 
-        return redirect('basketDetails/' . session()->get('sessionUserId'));
+        return redirect('basketDetails');
         // // $basket = basket::where('user_id', $user[0]->user_id)->get();
         // return view('frontend.pages.basket', compact('basket', 'courses', 'quizes'));
     }
@@ -173,7 +173,7 @@ class BasketController extends Controller
 
         $payments = new Payments();
         $payments->user_id = $user_id;
-        $payments->enroll_status = $user_id;
+        $payments->enroll_status = 0;
         $payments->amounts = $totalAmt;
         $payments->paymentMode = "Esewa";
         $payments->narration = "Test";

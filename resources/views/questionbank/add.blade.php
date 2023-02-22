@@ -19,7 +19,7 @@
                             <ul class="breadcome-menu">
                                 <li><a href="#">Home</a> <span class="bread-slash">/</span>
                                 </li>
-                                <li><span class="bread-blod ">questionsBank</span>
+                                <li><span class="bread-blod ">questions Bank</span>
                                 </li>
                             </ul>
                         </div>
@@ -29,14 +29,14 @@
         </div>
     </div>
 </div>
-</div>
+<!-- </div> -->
 <div class="single-pro-review-area mt-t-30 mg-b-15">
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="product-payment-inner-st">
                     <ul id="myTabedu1" class="tab-review-design">
-                        <li class="active"><a href="#description">Add questionsBank</a></li>
+                        <li class="active"><a href="#description">Add Questions Bank</a></li>
 
                     </ul>
                     <div id="myTabContent" class="tab-content custom-product-edit">

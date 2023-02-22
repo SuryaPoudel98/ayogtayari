@@ -48,15 +48,18 @@
                                                 <div class="row">
                                                     <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                                         <div class="form-group">
+                                                        <label class="form-label">Email</label>
                                                             <input name="email" id="" type="email" class="form-control" placeholder="Email" required>
 
                                                         </div>
                                                         <div class="form-group">
+                                                        <label class="form-label">Password</label>
                                                             <input name="password" id="" type="password" class="form-control" placeholder="Password" required>
 
                                                         </div>
 
                                                         <div class="form-group">
+                                                        <label class="form-label">Mobile Number</label>
                                                             <input name="mobile_number" id="" type="number" class="form-control" placeholder="Mobile Number" required>
 
                                                         </div>

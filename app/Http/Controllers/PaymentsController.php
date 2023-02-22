@@ -17,11 +17,11 @@ class PaymentsController extends Controller
      */
     public function index()
     {
-        
-        $users=User::select('*')->get();
-        $course=Course::select('*')->get();
-        $quiz=Quiz::select('*')->get();
-        return view('payment.add',compact('users','course','quiz'));
+
+        $users = User::select('*')->get();
+        $course = Course::select('*')->get();
+        $quiz = Quiz::select('*')->get();
+        return view('payment.add', compact('users', 'course', 'quiz'));
     }
 
     /**
@@ -51,12 +51,17 @@ class PaymentsController extends Controller
         $payments->date = $request->date;
         $payments->save();
         return redirect('/addPayment');
-
-
-
-
     }
 
+    public function list()
+    {
+
+        $purchaseHistories = \DB::table('payments')
+            ->join('users', 'payments.user_id', '=', 'users.user_id')
+            ->select('*', 'fullname', 'contact_number', 'email_address')
+            ->get();
+        return view('payment.list', compact('purchaseHistories'));
+    }
     /**
      * Display the specified resource.
      *
@@ -97,7 +102,7 @@ class PaymentsController extends Controller
             'status' => $request->status,
             'amounts' => $request->amounts,
             'date' => $request->date,
-            
+
         ]);
         return json_encode(array('status' => true, 'message' => 'Successfully Updated.'));
     }
@@ -108,9 +113,9 @@ class PaymentsController extends Controller
      * @param  \App\Models\Payments  $payments
      * @return \Illuminate\Http\Response
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
-        Payments::where('payment_id','=',$id)->delete();
+        Payments::where('payment_id', '=', $id)->delete();
         return json_encode(array('status' => true, 'message' => 'Sucessfully deleted.'));
     }
 }

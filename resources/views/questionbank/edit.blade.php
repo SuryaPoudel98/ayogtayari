@@ -29,7 +29,7 @@
         </div>
     </div>
 </div>
-</div>
+<!-- </div> -->
 <div class="single-pro-review-area mt-t-30 mg-b-15">
     <div class="container-fluid">
         <div class="row">

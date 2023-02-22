@@ -1,3 +1,7 @@
+<?php
+$users = \DB::select("select count(user_id) totaluser from users");
+?>
+
 <div class="all-content-wrapper">
     <div class="container-fluid">
         <div class="row">
@@ -27,10 +31,10 @@
                                         <ul class="nav navbar-nav mai-top-nav">
                                             <li class="nav-item"><a href="#" class="nav-link">Home</a>
                                             </li>
-                                            <li class="nav-item"><a href="#" class="nav-link">About</a>
+                                            <!-- <li class="nav-item"><a href="#" class="nav-link">About</a>
                                             </li>
                                             <li class="nav-item"><a href="#" class="nav-link">Services</a>
-                                            </li>
+                                            </li> -->
 
                                         </ul>
                                     </div>
@@ -508,7 +512,25 @@
 
 
     </div>
+
+
     @if (Request::is('admin-dashboard'))
+    <?php $totalincome = 0;
+    $courseincome = 0;
+    $quizincome = 0;
+    ?>
+    @foreach($courseEnroll as $item)
+    <?php $totalincome += $item->amount;
+    $courseincome += $item->amount;
+    ?>
+
+    @endforeach
+
+    @foreach($quizEnroll as $item)
+
+    <?php $totalincome += $item->amount;
+    $quizincome += $item->amount; ?>
+    @endforeach
     <div class="breadcome-area">
         <div class="container-fluid">
             <div class="row">
@@ -543,11 +565,11 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="analytics-sparkle-line reso-mg-b-30">
                         <div class="analytics-content">
-                            <h5>Computer Technologies</h5>
-                            <h2>$<span class="counter">5000</span> <span class="tuition-fees">Tuition Fees</span></h2>
-                            <span class="text-success">20%</span>
+                            <h5>Total Income</h5>
+                            <h2>Rs.<span class="counter">{{$totalincome}}</span> </h2>
+                            <span class="text-success">100%</span>
                             <div class="progress m-b-0">
-                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:20%;"> <span class="sr-only">20% Complete</span> </div>
+                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:100%;"> <span class="sr-only">20% Complete</span> </div>
                             </div>
                         </div>
                     </div>
@@ -555,11 +577,11 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="analytics-sparkle-line reso-mg-b-30">
                         <div class="analytics-content">
-                            <h5>Accounting Technologies</h5>
-                            <h2>$<span class="counter">3000</span> <span class="tuition-fees">Tuition Fees</span></h2>
-                            <span class="text-danger">30%</span>
+                            <h5>Quizes</h5>
+                            <h2>Rs.<span class="counter">{{ $quizincome}}</span> <span class="tuition-fees">Quiz Fees</span></h2>
+                            <span class="text-danger">{{round($quizincome/$totalincome*100)}}%</span>
                             <div class="progress m-b-0">
-                                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:30%;"> <span class="sr-only">230% Complete</span> </div>
+                                <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:{{round($quizincome/$totalincome*100)}}%;"> <span class="sr-only">230% Complete</span> </div>
                             </div>
                         </div>
                     </div>
@@ -567,11 +589,11 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="analytics-sparkle-line reso-mg-b-30 table-mg-t-pro dk-res-t-pro-30">
                         <div class="analytics-content">
-                            <h5>Electrical Engineering</h5>
-                            <h2>$<span class="counter">2000</span> <span class="tuition-fees">Tuition Fees</span></h2>
-                            <span class="text-info">60%</span>
+                            <h5>Courses</h5>
+                            <h2>Rs.<span class="counter">{{$courseincome}}</span> <span class="tuition-fees">Course Fees</span></h2>
+                            <span class="text-info">{{round($courseincome/$totalincome*100)}}%</span>
                             <div class="progress m-b-0">
-                                <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:60%;"> <span class="sr-only">20% Complete</span> </div>
+                                <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:{{round($courseincome/$totalincome*100)}}%;"> <span class="sr-only">20% Complete</span> </div>
                             </div>
                         </div>
                     </div>
@@ -579,11 +601,11 @@
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div class="analytics-sparkle-line table-mg-t-pro dk-res-t-pro-30">
                         <div class="analytics-content">
-                            <h5>Chemical Engineering</h5>
-                            <h2>$<span class="counter">3500</span> <span class="tuition-fees">Tuition Fees</span></h2>
-                            <span class="text-inverse">80%</span>
+                            <h5>Active Enrollment</h5>
+                            <h2><span class="counter">{{count($activeEnroll)}}</span> <span class="tuition-fees">Active Users</span></h2>
+                            <span class="text-inverse">{{round(count($activeEnroll)/$users[0]->totaluser*100)}}%</span>
                             <div class="progress m-b-0">
-                                <div class="progress-bar progress-bar-inverse" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:80%;"> <span class="sr-only">230% Complete</span> </div>
+                                <div class="progress-bar progress-bar-inverse" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" style="width:{{round(count($activeEnroll)/$users[0]->totaluser*100)}}%;"> <span class="sr-only">230% Complete</span> </div>
                             </div>
                         </div>
                     </div>
@@ -706,33 +728,33 @@
                 </div>
                 <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                     <div class="white-box analytics-info-cs mg-b-10 res-mg-b-30 res-mg-t-30 table-mg-t-pro-n tb-sm-res-d-n dk-res-t-d-n">
-                        <h3 class="box-title">Total Visit</h3>
+                        <h3 class="box-title">Users</h3>
                         <ul class="list-inline two-part-sp">
                             <li>
                                 <div id="sparklinedash"><canvas width="67" height="30" style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas></div>
                             </li>
-                            <li class="text-right sp-cn-r"><i class="fa fa-level-up" aria-hidden="true"></i> <span class="counter text-success">1500</span></li>
+                            <li class="text-right sp-cn-r"><i class="fa fa-level-up" aria-hidden="true"></i> <span class="counter text-success">{{$users[0]->totaluser}}</span></li>
                         </ul>
                     </div>
                     <div class="white-box analytics-info-cs mg-b-10 res-mg-b-30 tb-sm-res-d-n dk-res-t-d-n">
-                        <h3 class="box-title">Page Views</h3>
+                        <h3 class="box-title">Course Enroll</h3>
                         <ul class="list-inline two-part-sp">
                             <li>
                                 <div id="sparklinedash2"><canvas width="67" height="30" style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas></div>
                             </li>
-                            <li class="text-right graph-two-ctn"><i class="fa fa-level-up" aria-hidden="true"></i> <span class="counter text-purple">3000</span></li>
+                            <li class="text-right graph-two-ctn"><i class="fa fa-level-up" aria-hidden="true"></i> <span class="counter text-purple">{{count(@$courseEnroll)}}</span></li>
                         </ul>
                     </div>
                     <div class="white-box analytics-info-cs mg-b-10 res-mg-b-30 tb-sm-res-d-n dk-res-t-d-n">
-                        <h3 class="box-title">Unique Visitor</h3>
+                        <h3 class="box-title">Quiz Enroll</h3>
                         <ul class="list-inline two-part-sp">
                             <li>
                                 <div id="sparklinedash3"><canvas width="67" height="30" style="display: inline-block; width: 67px; height: 30px; vertical-align: top;"></canvas></div>
                             </li>
-                            <li class="text-right graph-three-ctn"><i class="fa fa-level-up" aria-hidden="true"></i> <span class="counter text-info">5000</span></li>
+                            <li class="text-right graph-three-ctn"><i class="fa fa-level-up" aria-hidden="true"></i> <span class="counter text-info">{{count($quizEnroll)}}</span></li>
                         </ul>
                     </div>
-                    <div class="white-box analytics-info-cs table-dis-n-pro tb-sm-res-d-n dk-res-t-d-n">
+                    <!-- <div class="white-box analytics-info-cs table-dis-n-pro tb-sm-res-d-n dk-res-t-d-n">
                         <h3 class="box-title">Bounce Rate</h3>
                         <ul class="list-inline two-part-sp">
                             <li>
@@ -741,12 +763,12 @@
                             <li class="text-right graph-four-ctn"><i class="fa fa-level-down" aria-hidden="true"></i> <span class="text-danger"><span class="counter">18</span>%</span>
                             </li>
                         </ul>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
     </div>
-    <div class="traffic-analysis-area">
+    <!-- <div class="traffic-analysis-area">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
@@ -787,7 +809,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     </br>
     @endif
     @yield('content')

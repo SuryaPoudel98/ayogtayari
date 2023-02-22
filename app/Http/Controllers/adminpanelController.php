@@ -21,6 +21,8 @@ class adminpanelController extends Controller
             ->where('type', 0)
             ->get();
 
+            // dd($courseEnroll);
+
         $quizEnroll = \DB::table('course_enrolls')
             ->join('quizzes', 'course_enrolls.course_or_quiz_id', '=', 'quizzes.quiz_id')
             ->join('payments', 'payments.tCode', '=', 'course_enrolls.tCode')
@@ -28,7 +30,13 @@ class adminpanelController extends Controller
             ->select('course_enrolls.*', 'quizzes.quiz_title', 'users.fullname')
             ->where('type', 1)
             ->get();
-        return view('adminpage.home', compact('courseEnroll','quizEnroll'));
+
+
+            $activeEnroll=\DB::select("select distinct(user_id) as user_id from payments inner join course_enrolls on payments.tCode=course_enrolls.tCode where endDate>='".date('Y-m-d')."' ");
+            
+            // dd($activeEnroll);
+
+        return view('adminpage.home', compact('courseEnroll','quizEnroll','activeEnroll'));
     }
 
     /**
